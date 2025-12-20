@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Edit</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h2> Edit Transaction : {{ transac.id }}</h2>
+        <form method="POST"> 
+            {% csrf_token %}
+            {{ forms.as_p }}    
+            <button type="submit">Edit</button>  
+        </form>
+        <br>
+        <a href="{% url 'Transaction1_page' %}">Back to Transaction list</a>
+    </body>
+</html>
+
+
+{% comment %} {% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Transaction Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <div class="flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md min-h-screen p-6">
+      <h2 class="text-xl font-bold mb-6 text-gray-700">Menu</h2>
+      <ul class="space-y-3 text-blue-600">
+        <li><a href="#" class="hover:text-blue-800">Manage Family</a></li>
+        <li><a href="#" class="hover:text-blue-800">Expense</a></li>
+        <li><a href="#" class="hover:text-blue-800">Report</a></li>
+        <li><a href="#" class="hover:text-blue-800">Category</a></li>
+        <li><a href="#" class="hover:text-blue-800">Reminders</a></li>
+        <li><a href="#" class="hover:text-blue-800">Family Member List</a></li>
+        <li><a href="#" class="hover:text-blue-800">Payment</a></li>
+        <li><a href="#" class="hover:text-blue-800">Reminder List</a></li>
+        <li><a href="#" class="hover:text-blue-800">Transaction List</a></li>
+        <li><a href="#" class="hover:text-blue-800">Category List</a></li>
+        <li><a href="#" class="hover:text-blue-800">User List</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+
+      <h1 class="text-3xl font-bold mb-6 text-gray-800">
+        Transaction Details
+      </h1>
+
+      <!-- Table Container -->
+      <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+        <table class="min-w-full border border-gray-200">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Date
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Amount
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Category
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Spend By
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Transaction Description
+              </th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
+                Type of Transaction
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="bg-white">
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border">--</td>
+              <td class="px-4 py-2 border">--</td>
+              <td class="px-4 py-2 border">--</td>
+              <td class="px-4 py-2 border">--</td>
+              <td class="px-4 py-2 border">--</td>
+              <td class="px-4 py-2 border">--</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html> {% endcomment %}

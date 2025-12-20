@@ -1,0 +1,8 @@
+
+
+<form action ="{% url 'payment_send' %}" method="post">
+     {% csrf_token %}
+     <lable>please enter the amount:</lable>
+     <input type="number" name="amount" id="">
+     <button type="submit">pay</button>
+</form>     

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+{% include 'member.html' %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Transaction1</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h1> Transaction Details</h1>
+        <table border="1">
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Spend by</th>
+                <th>Transaction Description</th>
+                <th>Type of Transaction</th>
+            </tr>    
+            
+            {% for T in forms %}
+            <tr>
+                <td>{{ T.date }}</td>
+                <td>{{ T.amount }}</td>
+                <td>{{ T.category_id }}</td>
+                <td>{{ T.Registration_id }}</td>
+                <td>{{ T.Transaction_desc }}</td>
+                <td>{{ T.Type }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+
+        
+    </body>
+</html>
