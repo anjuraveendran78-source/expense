@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+<h2 style="text-align:center;">Expense Report</h2>
+
+<table width="100%" cellspacing="0" cellpadding="6" border="1">
+<tr>
+  <td><b>Total Income</b></td>
+  <td>₹ {{ income }}</td>
+</tr>
+<tr>
+  <td><b>Total Expense</b></td>
+  <td>₹ {{ expense }}</td>
+</tr>
+<tr>
+  <td><b>Balance</b></td>
+  <td>₹ {{ balance }}</td>
+</tr>
+</table>
+
+<br>
+
+<table width="100%" cellspacing="0" cellpadding="6" border="1">
+<tr>
+  <th>Date</th>
+  <th>Description</th>
+  <th>Type</th>
+  <th>Amount</th>
+</tr>
+
+{% for t in transactions %}
+<tr>
+  <td>{{ t.date }}</td>
+  <td>{{ t.Transaction_desc }}</td>
+  <td>{{ t.Type }}</td>
+  <td>₹ {{ t.amount }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

@@ -1,191 +1,86 @@
-{% comment %} <!DOCTYPE html>
-{% include 'user.html' %}
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Expense</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-       <h1>Transactions</h1> 
-       <form method="post" action ="{% url "user_expense_page"%}">
-          {% csrf_token %}
-          {{ forms.as_p}}
-          <ul>
-            {% for c in category %}
-               <li>{{c.category_type}}</li>
-            {% endfor %}  
-          </ul>
-
-
-          <button type="Submit">OK</button>
-          
-        </form>  
-
-
-    </body>
-</html> {% endcomment %}
-
 {% load static %}
 {% load widget_tweaks %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Expense Report</title>
-    <!-- Include Tailwind CSS from CDN (for simplicity) -->
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <meta charset="UTF-8">
+  <title>Expense</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="p-4">  
-    <form method="post" action ="{% url "user_expense_page"%}" class="space-y-4">
-      {% csrf_token %}
-       <!-- ====================== HEADER ====================== -->
-    <header class="bg-black shadow-sm cover">
-        <nav class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-            <img src="{% static 'image/cash.png' %}" alt="logo" class="h-25px w-20 mr-3" />
-            <h1 class="text-2xl font-bold text-green-600">
-             Expense Tracker
-            </h1>
 
-            <div class="space-x-4">
-                <a href="{% url 'UserHome_page' %}"
-                    class="p-2 text-sm font-medium bg-green-600 text-white rounded hover:bg-green-700">
-                    Home
-                </a>
-               
-                <a href="{% url 'main_home' %}"
-                    class="px-4 py-2 text-sm font-medium border border-green-600 text-green-600 rounded hover:bg-blue-50">
-                    Logout
-                </a>
-         
-           
-            </div>
-        </nav>
-    </header>
+<body class="p-4">
 
+<form method="post" action="{% url 'user_expense_page' %}" class="space-y-6">
+{% csrf_token %}
 
-    <div class="flex">
-        <!-- Sidebar -->
-        <aside class="w-64 min-h-screen bg-white shadow-md p-6">
-      <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-      <ul class="space-y-3 text-gray-700">
-        <li><a href="{% url 'Register_page' %}" class="hover:text-indigo-600">Manage Family</a></li>
-        <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-        <li><a href="{% url 'Dashboard1_page' %}" class="hover:text-indigo-600">Report</a></li>
-        <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
-        <li><a href="{% url 'Reminder1_page' %}" class="hover:text-indigo-600">Reminders</a></li>
-        <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600">Family Member List</a></li>
-        <li><a href="{% url 'paypage' %}" class="hover:text-indigo-600">Payment</a></li>
-        <li><a href="{% url 'reminder_list1' %}" class="hover:text-indigo-600">Reminder List</a></li>
-        <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">Transaction List</a></li>
-        <li><a href="{% url 'Categorylist_page' %}" class="hover:text-indigo-600">Category List</a></li>
-        {% comment %} <li><a href="#" class="hover:text-indigo-600">User List</a></li> {% endcomment %}
-      </ul>
-    </aside>
-        <!-- Main Content Area (Transactions Form) -->
-        
-    <div class="bg-white w-full max-w-2xl p-8 rounded-xl shadow-md border border-gray-300">
+<!-- ================= HEADER ================= -->
+<header class="bg-black shadow-sm">
+  <nav class="max-w-7xl mx-auto px-8 py-4 flex justify-between">
+    <h1 class="text-2xl font-bold text-green-600">Expense Tracker</h1>
+    <a href="{% url 'UserHome_page' %}" class="bg-green-600 text-white px-4 py-2 rounded">Home</a>
+  </nav>
+</header>
 
-        <h2 class="text-2xl font-bold mb-8 text-center">Transactions</h2>
+<div class="flex">
 
-        <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Sidebar -->
+<aside class="w-64 bg-white shadow-md p-6">
+  <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
+  <ul class="space-y-3">
+    <li><a href="{% url 'Expense_page' %}">Expense</a></li>
+    <li><a href="{% url 'Transaction1_page' %}">Transaction List</a></li>
+  </ul>
+</aside>
 
-        <!-- ID -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Id</label>
-            <input type="text"
-            placeholder="Enter Transaction id"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+<!-- Main Content -->
+<div class="bg-white w-full max-w-2xl p-8 rounded-xl shadow-md">
 
-        <!-- Date -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Date</label>
-            <input type="date"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+<h2 class="text-2xl font-bold mb-6 text-center">Add Transaction</h2>
 
-        <!-- Amount -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Amount</label>
-            <input type="number"
-            placeholder="Enter amount"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Category -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Category</label>
-            <select
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <option>---------</option>
-            <option>Food</option>
-            <option>Travel</option>
-            <option>Shopping</option>
-            </select>
-        </div>
+<div>
+  {{ forms.id.label_tag }}
+  {{ forms.id|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
 
-        <!-- Spend By -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Spend by</label>
-            <select
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            <option>---------</option>
-            <option>Cash</option>
-            <option>Card</option>
-            <option>UPI</option>
-            </select>
-        </div>
+<div>
+  {{ forms.date.label_tag }}
+  {{ forms.date|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
 
-        <!-- Description -->
-        <div class="md:col-span-2">
-            <label class="block text-sm font-medium mb-1">Transaction desc</label>
-            <input type="text"
-            placeholder="Enter Transaction description"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+<div>
+  {{ forms.amount.label_tag }}
+  {{ forms.amount|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
 
-        <!-- Type -->
-        <div class="md:col-span-2">
-            <label class="block text-sm font-medium mb-1">Type of Transaction</label>
-            <input type="text"
-            placeholder="Enter type of transaction"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                    focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        </div>
+<div>
+  {{ forms.category_id.label_tag }}
+  {{ forms.category_id|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
 
-        <!-- Button -->
-        <div class="md:col-span-2 flex justify-center mt-4">
-            <button
-            class="bg-blue-600 text-white px-8 py-2 rounded-lg
-                    hover:bg-blue-700 transition">
-            OK
-            </button>
-        </div>
+<div class="md:col-span-2">
+  {{ forms.Transaction_desc.label_tag }}
+  {{ forms.Transaction_desc|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
 
-    </div>
-    </div>
-    </form>
-</body>
-</html>
- <!-- ====================== FOOTER ====================== -->
-    <footer class="bg-white mt-16 py-4 border-t">
-       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
-            © 2025 Your College / Project Name — All Rights Reserved.
-        </div>
-    </footer>
+<div class="md:col-span-2">
+  {{ forms.Type.label_tag }}
+  {{ forms.Type|add_class:"w-full border px-4 py-2 rounded" }}
+</div>
+
+</div>
+
+<div class="flex justify-center mt-6">
+  <button type="submit" class="bg-blue-600 text-white px-8 py-2 rounded-lg">
+    Save Transaction
+  </button>
+</div>
+
+</div>
+</div>
+</form>
 
 </body>
 </html>

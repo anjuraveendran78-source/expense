@@ -1,4 +1,8 @@
-{% comment %} <!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% comment %} 
+<!DOCTYPE html>
 {% include 'user.html' %}
 <html>
     <head>
@@ -10,7 +14,7 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <form method="post" action ="{% url "user_category_page"%}">
+        <form method="post" action ="{% url 'user_category_page'%}">
           {% csrf_token %}
           {{ forms.as_p}}
           <button type="Submit">submit</button>
@@ -19,9 +23,7 @@
     </body>
 </html> {% endcomment %}
 
-{% load static %}
-{% load widget_tweaks %}
-{% load i18n %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -63,27 +65,29 @@
 
     <!-- ====================== content SECTION ====================== -->
     
-    <div class="grow flex items-center justify-center"> 
+    <div class="grow flex items-center justify-center">  
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md border-2 border-blue-400">
-        <h1 class="text-2xl font-bold mb-6">Category Form</h1>
-        <form>
-            <div class="mb-4">
-                <label for="id" class="block text-gray-700">Id:</label>
-                <input type="text" id="id" placeholder="Enter category ID"
-                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-6">
-                <label for="category" class="block text-gray-700">Category:</label>
-                <input type="text" id="category" placeholder="Enter category Type" 
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div  class="text-center mt-4">
-                <button type="submit" 
-                class="bg-blue-600 hover:bg-blue-500 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm">
-                    OK
-                </button>
-            </div>
-        </form>
+    <h1 class="text-2xl font-bold mb-6">Category Form</h1>
+
+    <div class="mb-4">
+        {{ forms.category_id.label_tag }}
+        {{ forms.category_id|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    </div>
+
+    <div class="mb-6">
+        {{ forms.category_type.label_tag }}
+        {{ forms.category_type|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" 
+        class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow-sm">
+            OK
+        </button>
+    </div>
+</div>
+</div>
+
     </div>
     </div>
         

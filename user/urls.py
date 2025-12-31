@@ -38,7 +38,7 @@ urlpatterns = [
      #Edit and Delete functions urls
      path('user/member_delete/<int:id>/',views.member_delete,name='member_delete'),
      path('user/member_edit/<int:id>/',views.member_edit,name='member_edit'),
-     path('user/user_delete/<int:id>/',views.user_delete,name='user_delete'),
+    path('user_delete/<int:id>/', views.user_delete, name='user_delete'),
      path('user/user_edit/<int:id>/',views.user_edit_page,name='user_edit_page'),
      path('user/category_delete/<int:id>/',views.category_delete,name='category_delete'),
      path('user/category_edit/<int:id>/',views.category_edit_page,name='category_edit_page'),
@@ -59,5 +59,10 @@ urlpatterns = [
      path('user/user_reminder_action1',views.user_reminder1_page, name='user_reminder1_page'),
      path('user/user_reminder_action2',views.user_reminder2_page, name='user_reminder2_page'),
      path('user/user_email_action',views.user_email_page, name='user_email_page'),
+
+      #reports
+      path('user/reports/', views.reports_page, name='reports_page'),
+      path('report/pdf/', views.generate_pdf, name='generate_pdf'),
+
   
 ]

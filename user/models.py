@@ -2,21 +2,19 @@ from unicodedata import category
 from django.db import models # type: ignore
 
 class Registration(models.Model):
-    Registration_id= models.IntegerField(max_length=50,primary_key=True)
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
-    confirm_password = models.CharField(max_length=100,default=" ")
-    usertype = models.CharField(max_length=50)
-    email_id = models.EmailField(max_length=50)
-    phn_no   = models.IntegerField(max_length=50)
-    location = models.CharField(max_length=50)
+    confirm_password = models.CharField(max_length=100)
+    email_id = models.EmailField()
+    phn_no = models.CharField(max_length=15)
+    location = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.usertype
+    ROLE_CHOICES = (
+        ('user', 'User'),
+        ('family', 'Family Member'),
+    )
 
-# Create your models here.
-
-
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
 
 class Notification(models.Model):
@@ -36,11 +34,6 @@ class Transaction(models.Model):
          related_name='Categories')
      
      amount = models.FloatField(max_length=100)
-     Registration_id = models.ForeignKey(
-         Registration,
-         on_delete=models.CASCADE,
-         related_name='spend_by')
-     
      Transaction_desc = models.CharField(max_length=100)
      Type = models.CharField(max_length=100)
 

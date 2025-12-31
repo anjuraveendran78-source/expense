@@ -2,13 +2,25 @@ from django.http import HttpResponse # type: ignore
 from django .shortcuts import render,redirect,get_object_or_404 # type: ignore
 from .models import Registration, Notification, Transaction, Category, Reminder
 from .forms import LoginForm, RegistrationForm,TransactionForm,DashboardForm,ResetForm,CategoryForm,ReminderForm
-from .util import get_phonepe_client,meta_info_generation,buil_request
+# from .util import get_phonepe_client,meta_info_generation,buil_request
 from django.urls import reverse
 from uuid import uuid4
 from .util import send_email
 import random
+from django.db.models import Sum, Q
+from django.db.models.functions import TruncMonth
+import json
+from django.utils.dateformat import DateFormat
+from django.utils.formats import get_format
+from django.shortcuts import render
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from datetime import datetime, timedelta
+print("🔥 DATETIME IMPORT CHECK:", datetime)
 
-# Create your views here.
+
+#BASIC Page Renders
+
 def main_home(request):
     return render(request, 'home.html')
 
@@ -16,10 +28,15 @@ def login_page(request):
     register=LoginForm
     return render(request, 'login.html', {'forms':register})
 
-
 def Register_page(request):
     Register=RegistrationForm()
     return render(request, 'registration.html',{'forms':Register})
+
+def UserHome_page(request):
+    return render(request, 'userhome.html')
+
+def FamHome_page(request):
+    return render(request, 'famhome.html')
 
 def Expense_page(request):
     Expense=TransactionForm()
@@ -50,12 +67,6 @@ def Familyreg_page(request):
     familyregister=RegistrationForm()
     return render(request, 'familyreg.html',{'forms':familyregister})
 
-def UserHome_page(request):
-    return render(request, 'userhome.html')
-
-def FamHome_page(request):
-    return render(request, 'famhome.html')
-
 def Reminder1_page(request):
     reminder1 = ReminderForm()
     return render(request, 'reminder1.html', {'forms':reminder1})
@@ -64,35 +75,104 @@ def Reminder2_page(request):
     reminder2 = ReminderForm()
     return render(request, 'reminder2.html', {'forms':reminder2})
 
-#List functions
-
 def reminder_list1(request):
-    remind = Reminder.objects.all()
-    return render(request, 'reminder_list1.html', {'forms':remind})
+    reminders = Reminder.objects.all()
+    print("REMINDERS:", reminders)   # DEBUG LINE
+    return render(request, 'reminder_list1.html', {'reminders': reminders})
 
 def reminder_list2(request):
     remind2 = Reminder.objects.all()
     return render(request, 'reminder_list2.html',{'forms':remind2})
 
+# Login Action Page
+
+def user_login_page(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = Registration.objects.filter(username=username, password=password).first()
+        if not user:
+            return HttpResponse("Login failed. Invalid username or password")
+        request.session["username"] = user.username
+        request.session["user_id"] = user.id
+        if user.role == "user":
+            return redirect("UserHome_page")
+        else:
+            return redirect("FamHome_page")
+    return render(request, "login.html")
+
+#User Registration Action Pages
+
+def user_reg1_page(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        email_id = request.POST.get("email_id")
+        phn_no = request.POST.get("phn_no")
+        location = request.POST.get("location")
+
+        if password != confirm_password:
+            return HttpResponse("Passwords do not match")
+
+        Registration.objects.create(
+            username=username,
+            password=password,
+            confirm_password=confirm_password,
+            email_id=email_id,
+            phn_no=phn_no,
+            location=location,
+            role="user"   # 👈 Force correct role
+        )
+
+        return redirect("user_login_page")
+
+    return render(request, "user/user_register.html")
+
+#family member Registration Action Pages
+
+def user_reg2_page(request):
+    if request.method == "POST":
+        obj = Registration.objects.create(
+            username=request.POST.get("username"),
+            password=request.POST.get("password"),
+            confirm_password=request.POST.get("confirm_password"),
+            email_id=request.POST.get("email_id"),
+            phn_no=request.POST.get("phn_no"),
+            location=request.POST.get("location"),
+            role="family"   # 👈 Always family
+        )
+
+        print("Saved as:", obj.role)  # Debug
+        return redirect("Memberlist_page")
+
+    return render(request, "familyreg.html")
+
+#transaction, category, member, user list pages
+
 def Transaction1_page(request):
-    Trans = Transaction.objects.all()
-    return render(request, 'transaction_list1.html', {'forms':Trans})
+    transactions = Transaction.objects.all()
+    return render(request, 'transaction_list1.html', {'transactions': transactions})
+
 
 def Transaction2_page(request):
     trans = Transaction.objects.all()
     return render(request, 'transaction_list2.html', {'forms':trans})
 
 def Categorylist_page(request):
-    category1= Category.objects.all()
-    return render(request, 'category_list.html', {'forms':category1})
+    categories = Category.objects.all()
+    return render(request, 'category_list.html', {'categories': categories})
 
 def Memberlist_page(request):
-    memb = Registration.objects.filter(usertype='family_member')
-    return render(request, 'fam_member.html', {'forms':memb})
+    members = Registration.objects.filter(role='family')
+    return render(request, 'fam_member.html', {'members': members})
+
 
 def userlist_page(request):
-    users = Registration.objects.filter(usertype='user')
-    return render(request, 'user_list.html', {'forms':users})
+    users = Registration.objects.filter(role='user')
+    return render(request, 'user_list.html', {'forms': users})
+
+
 
 
 # Edit and Delete functions
@@ -116,15 +196,15 @@ def trans1_edit(request, id):
 
 #2.Family Member 
 
-
 def member_delete(request, id):
-    member = Registration.objects.get(Registration_id=id)
+    member = get_object_or_404(Registration, id=id)
     member.delete()
     return redirect('Memberlist_page')
 
 
+
 def member_edit(request, id):
-    member = get_object_or_404(Registration, Registration_id=id)
+    member = get_object_or_404(Registration, id=id)
     if request.method == "POST":
         form = RegistrationForm(request.POST, instance=member)
         if form.is_valid():
@@ -134,15 +214,17 @@ def member_edit(request, id):
         form = RegistrationForm(instance=member)
     return render(request, "member_edit.html", {'forms': form, 'member': member})
 
+
 #3.User 
 
 def user_delete(request, id):
-    user = Registration.objects.get(Registration_id=id)
+    user = get_object_or_404(Registration, id=id)
     user.delete()
     return redirect('userlist_page')
 
+
 def user_edit_page(request, id):
-    user = get_object_or_404(Registration, Registration_id=id)
+    user = get_object_or_404(Registration, id=id)
     if request.method == "POST":
         form = RegistrationForm(request.POST, instance=user)
         if form.is_valid():
@@ -190,111 +272,97 @@ def remind1_edit_page(request, id):
         form = ReminderForm(instance=remind)
     return render(request, "remind1_edit.html", {'forms': form, 'remind':remind})
 
-
-
-
-
-#Action Page Functions
-     
-
-
-def user_reg1_page(request):
-    if request.method == "POST":
-       form = RegistrationForm(request.POST)
-       if form.is_valid():
-           obj1 = form.save(commit=False)
-           obj1.usertype = "user"
-           obj1.save()
-       return redirect('login_page')
-     
-
-def user_reg2_page(request): 
-        if request.method == "POST":
-           form = RegistrationForm(request.POST)
-           if form.is_valid():
-               obj2 = form.save(commit=False)
-               obj2.usertype = "family_member"
-               obj2.save()
-        return HttpResponse("Family Member Added")
-
-
-def user_login_page(request):
-    if request.method == "POST":
-            username= request.POST.get('username')
-            password= request.POST.get('password')
-
-    try:
-            user= Registration.objects.get(username=username, password=password)
-            request.session['username'] = user.username
-            request.session['password'] = user.password
-            if user.usertype == 'user':
-                return redirect('UserHome_page')
-            else:
-                return redirect('FamHome_page')
-
-    except Registration.DoesNotExist: 
-            return HttpResponse("login not sucsesfull.Invalid username or password")   
  
-
 def user_reset_page(request):
     if request.method == "POST":
        form = RegistrationForm(request.POST)
        if form.is_valid():
            form.save()
-           
        return HttpResponse("password_reseted")   
-    
     return HttpResponse("Failed")
 
 
 def user_category_page(request):
     if request.method == "POST":
-       form = CategoryForm(request.POST)
-       if form.is_valid():
-           form.save()
-       return redirect('Categorylist_page')
-             
-    return HttpResponse("Failed")
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Categorylist_page')
+        else:
+            print(form.errors)  
+            return HttpResponse(f"Form errors: {form.errors}")
+    form = CategoryForm()
+    return render(request, 'category.html', {'forms': form})
 
 
 def user_expense_page(request):
     if request.method == "POST":
-       form = TransactionForm(request.POST)
-       if form.is_valid():
-          form.save()
-       return redirect('Transaction1_page')
-    
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Transaction1_page')
+        else:
+            print(form.errors)
+            return HttpResponse(f"Form errors: {form.errors}")
+    form = TransactionForm()
+    return render(request, 'expense.html', {'forms': form})
 
 
 def user_familyexpense_page(request):
+    print("🔥 FAMILY EXPENSE VIEW HIT")
+
     if request.method == "POST":
-          form = TransactionForm(request.POST)
-          if form.is_valid():
-             form.save()
-          return redirect('Transaction2_page')
+        print("POST DATA:", request.POST)
+
+        form = TransactionForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            print(" SAVED SUCCESSFULLY")
+            return redirect('Transaction2_page')
+        else:
+            print(" FORM ERRORS:", form.errors)
+            return HttpResponse(f"<h1>Form Error</h1><pre>{form.errors}</pre>")
+
+    form = TransactionForm()
+    return render(request, 'familyexpense.html', {'forms': form})
 
 
-
+# def user_reminder1_page(request):
+#     if request.method == "POST":
+#         form = ReminderForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('reminder_list1.html')   # stay on same page
+#     else:
+#         form = ReminderForm()
+#     reminders = Reminder.objects.all()  
+#     return render(request, 'reminder1.html', {
+#         'forms': form,
+#         'reminders': reminders,   
+#     })
 def user_reminder1_page(request):
     if request.method == "POST":
-       form = ReminderForm(request.POST)
-       if form.is_valid():
-           form.save()
-           
-       return redirect('reminder_list1')   
-    
-    return HttpResponse("Failed")
+        form = ReminderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('reminder_list1')   
+    else:
+        form = ReminderForm()
+    return render(request, 'reminder1.html', {'forms': form})
 
 
 def user_reminder2_page(request):
     if request.method == "POST":
-       form = ReminderForm(request.POST)
-       if form.is_valid():
-           form.save()
-           
-       return redirect('reminder_list2')   
-    
-    return HttpResponse("Failed")
+        form = ReminderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('reminder_list2')
+        else:
+            print(form.errors)
+    else:
+        form = ReminderForm()
+    return render(request, 'reminder2.html', {'forms': form})
 
 
 #phonepe functions
@@ -355,8 +423,113 @@ def user_email_page(request):
             send = send_email(email,subject,body)
             request.session['otp'] = otp
             return render(request, 'verify_otp.html')
-
         except Registration.DoesNotExist: 
             return HttpResponse("no user in this email id")  
 
-            
+
+# -- Reports view
+
+
+def reports_page(request):
+
+    transactions = Transaction.objects.all()
+
+    range_type = request.GET.get("range")
+    start = request.GET.get("start")
+    end = request.GET.get("end")
+
+    # ------------------ APPLY FILTERS ------------------
+
+    if range_type == "this_month":
+        today = datetime.today().date()
+        start_date = today.replace(day=1)
+        transactions = transactions.filter(date__gte=start_date)
+
+    elif range_type == "last_6_months":
+        start_date = (datetime.today() - timedelta(days=180)).date()
+        transactions = transactions.filter(date__gte=start_date)
+
+    elif start and end:
+        start_date = datetime.strptime(start, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end, "%Y-%m-%d").date()
+        transactions = transactions.filter(date__range=[start_date, end_date])
+
+    # ------------------ SUMMARY ------------------
+
+    income_total = transactions.filter(Type__icontains="income").aggregate(total=Sum("amount"))["total"] or 0
+    expense_total = transactions.filter(Type__icontains="expense").aggregate(total=Sum("amount"))["total"] or 0
+    balance = income_total - expense_total
+
+    # ------------------ MONTHLY CHART ------------------
+
+    monthly = (
+        transactions
+        .annotate(month=TruncMonth("date"))
+        .values("month")
+        .annotate(
+            income=Sum("amount", filter=Q(Type__icontains="income")),
+            expense=Sum("amount", filter=Q(Type__icontains="expense"))
+        )
+        .order_by("month")
+    )
+
+    months = []
+    income_data = []
+    expense_data = []
+
+    for row in monthly:
+        if row["month"] is not None:
+            months.append(row["month"].strftime("%b %Y"))
+            income_data.append(row["income"] or 0)
+            expense_data.append(row["expense"] or 0)
+
+    # ------------------ CATEGORY PIE ------------------
+
+    category_data = (
+        transactions
+        .filter(Type__icontains="expense")
+        .values("category_id__category_type")
+        .annotate(total=Sum("amount"))
+    )
+
+    category_labels = [c["category_id__category_type"] for c in category_data]
+    category_values = [c["total"] for c in category_data]
+
+    # ------------------ RENDER ------------------
+
+    return render(request, "reports.html", {
+        "income": income_total,
+        "expense": expense_total,
+        "balance": balance,
+        "transactions": transactions,
+
+        "months_json": json.dumps(months),
+        "income_json": json.dumps(income_data),
+        "expense_json": json.dumps(expense_data),
+        "category_labels_json": json.dumps(category_labels),
+        "category_values_json": json.dumps(category_values),
+    })
+
+
+
+def generate_pdf(request):
+    transactions = Transaction.objects.all()
+    income = transactions.filter(Type__iexact='income').aggregate(total=Sum('amount'))['total'] or 0
+    expense = transactions.filter(Type__iexact='expense').aggregate(total=Sum('amount'))['total'] or 0
+
+    balance = income - expense
+
+    template = get_template("report_pdf.html")
+    html = template.render({
+        'transactions': transactions,
+        'income': income,
+        'expense': expense,
+        'balance': balance,
+    })
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="expense_report.pdf"'
+    pisa.CreatePDF(html, dest=response)
+    return response
+
+

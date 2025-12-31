@@ -80,7 +80,8 @@
       <ul class="space-y-3 text-gray-700">
         <li><a href="{% url 'Register_page' %}" class="hover:text-indigo-600">Manage Family</a></li>
         <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-        <li><a href="{% url 'Dashboard1_page' %}" class="hover:text-indigo-600">Report</a></li>
+       <li><a href="{% url 'reports_page' %}" class="hover:text-indigo-600">Report</a></li>
+        
         <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
         <li><a href="{% url 'Reminder1_page' %}" class="hover:text-indigo-600">Reminders</a></li>
         <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600">Family Member List</a></li>
@@ -115,68 +116,33 @@
           </tr>
         </thead>
 
-        <tbody>
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-2 border">1</td>
-            <td class="px-4 py-2 border">Food</td>
-            <td class="px-4 py-2 border text-center space-x-2">
-                <!-- Edit -->
-                <a href="#"
-                onclick="return confirm('Are you sure you want to edit this member?')" 
-                  class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                  Edit
-                </a>
+       <tbody>
+{% for c in categories %}
+<tr class="hover:bg-gray-50">
+  <td class="px-4 py-2 border">{{ c.category_id }}</td>
+  <td class="px-4 py-2 border">{{ c.category_type }}</td>
+  <td class="px-4 py-2 border text-center space-x-2">
 
-                <!-- Delete -->
-                <a href="#"
-                  onclick="return confirm('Are you sure you want to delete this member?')"
-                  class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                  Delete
-                </a>
-            </td>
-          </tr>
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-2 border">2</td>
-            <td class="px-4 py-2 border">Transport</td>
-            <td class="px-4 py-2 border text-center space-x-2">
-                <!-- Edit -->
-                <a href="#"
-                onclick="return confirm('Are you sure you want to edit this member?')" 
-                  class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                  Edit
-                </a>
+    <a href="{% url 'category_edit_page' c.category_id %}"
+       class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+       Edit
+    </a>
 
-                <!-- Delete -->
-                <a href="#"
-                  onclick="return confirm('Are you sure you want to delete this member?')"
-                  class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                  Delete
-                </a>
-            </td>
-          </tr>
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-2 border">3</td>
-            <td class="px-4 py-2 border">Rent</td>
-          
-          1 <td class="px-4 py-2 border text-center space-x-2">
-                <!-- Edit -->
-                <a href="#"
-                onclick="return confirm('Are you sure you want to edit this member?')" 
-                  class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                  Edit
-                </a>
+    <a href="{% url 'category_delete' c.category_id %}"
+       onclick="return confirm('Are you sure you want to delete this category?')"
+       class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+       Delete
+    </a>
 
-                <!-- Delete -->
-                <a href="#"
-                  onclick="return confirm('Are you sure you want to delete this member?')"
-                  class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                  Delete
-                </a>
-            </td>
-          </tr>
-      
-          
-        </tbody>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="3" class="text-center py-4 text-gray-500">No categories found</td>
+</tr>
+{% endfor %}
+</tbody>
+
 
       </table>
 

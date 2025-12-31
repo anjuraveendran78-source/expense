@@ -1,44 +1,44 @@
-from django.conf import settings
-from phonepe.sdk.pg.payments.v2.standard_checkout_client import StandardCheckoutClient
-from phonepe.sdk.pg.payments.v2.models.request.standard_checkout_pay_request import StandardCheckoutPayRequest 
-from phonepe.sdk.pg.common.models.request.meta_info import MetaInfo
-from phonepe.sdk.pg.env import Env
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# from django.conf import settings
+# # from phonepe.sdk.pg.payments.v2.standard_checkout_client import StandardCheckoutClient
+# from phonepe.sdk.pg.payments.v2.models.request.standard_checkout_pay_request import StandardCheckoutPayRequest 
+# from phonepe.sdk.pg.common.models.request.meta_info import MetaInfo
+# from phonepe.sdk.pg.env import Env
+# import smtplib
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
 
-#phonepe
-_client = None
-def get_phonepe_client():
-    global _client
-    if _client is None:
-        env = Env.SANDBOX if settings.PHONEPE_ENV == "SANDBOX" else Env.PROTECTION
-        _client = StandardCheckoutClient.get_instance(
-            client_id=settings.CLIENT_ID,
-            client_secret=settings.CLIENT_SECRET,
-            client_version=settings.CLIENT_VERSION,
-            env=env,
-            should_publish_events=False,
-        )
-    return _client
+# #phonepe
+# _client = None
+# def get_phonepe_client():
+#     global _client
+#     if _client is None:
+#         env = Env.SANDBOX if settings.PHONEPE_ENV == "SANDBOX" else Env.PROTECTION
+#         _client = StandardCheckoutClient.get_instance(
+#             client_id=settings.CLIENT_ID,
+#             client_secret=settings.CLIENT_SECRET,
+#             client_version=settings.CLIENT_VERSION,
+#             env=env,
+#             should_publish_events=False,
+#         )
+#     return _client
 
-#setting meta info
-def meta_info_generation():
-    meta_info = MetaInfo(
-    udf1="test-user-123",
-    udf2="demo-order",
-    udf3="any-extra-info",
-    )   
-    return meta_info
+# #setting meta info
+# def meta_info_generation():
+#     meta_info = MetaInfo(
+#     udf1="test-user-123",
+#     udf2="demo-order",
+#     udf3="any-extra-info",
+#     )   
+#     return meta_info
 
-def buil_request(client,uniqe_order_id,amount_paise,redirect_url,meta_info):
-    standard_pay_request = StandardCheckoutPayRequest.build_request(
-    merchant_order_id=uniqe_order_id,
-    amount=amount_paise,
-    redirect_url=redirect_url,
-    meta_info=meta_info,
-)
-    return standard_pay_request
+# def buil_request(client,uniqe_order_id,amount_paise,redirect_url,meta_info):
+#     standard_pay_request = StandardCheckoutPayRequest.build_request(
+#     merchant_order_id=uniqe_order_id,
+#     amount=amount_paise,
+#     redirect_url=redirect_url,
+#     meta_info=meta_info,
+# )
+#     return standard_pay_request
 
 #email
 def send_email(receiver,subject,body):

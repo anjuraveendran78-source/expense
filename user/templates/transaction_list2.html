@@ -1,40 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
-
-{% include 'member.html' %}
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Transaction1</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h1> Transaction Details</h1>
-        <table border="1">
-            <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Category</th>
-                <th>Spend by</th>
-                <th>Transaction Description</th>
-                <th>Type of Transaction</th>
-            </tr>    
-            
-            {% for T in forms %}
-            <tr>
-                <td>{{ T.date }}</td>
-                <td>{{ T.amount }}</td>
-                <td>{{ T.category_id }}</td>
-                <td>{{ T.Registration_id }}</td>
-                <td>{{ T.Transaction_desc }}</td>
-                <td>{{ T.Type }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        
+<head>
+  <title>Transaction List</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
 
-        
-    </body>
+<body class="bg-gray-100">
+
+<div class="max-w-5xl mx-auto mt-10 bg-white p-6 rounded shadow">
+
+<h2 class="text-2xl font-bold mb-6">Transaction List</h2>
+
+<table class="w-full border">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="border p-2">ID</th>
+      <th class="border p-2">Date</th>
+      <th class="border p-2">Amount</th>
+      <th class="border p-2">Category</th>
+      <th class="border p-2">Description</th>
+      <th class="border p-2">Type</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for t in transactions %}
+    <tr class="text-center">
+      <td class="border p-2">{{ t.id }}</td>
+      <td class="border p-2">{{ t.date }}</td>
+      <td class="border p-2">{{ t.amount }}</td>
+      <td class="border p-2">{{ t.category_id }}</td>
+      <td class="border p-2">{{ t.Transaction_desc }}</td>
+      <td class="border p-2">{{ t.Type }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center p-4 text-red-500">
+        No transactions found.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+</body>
 </html>
+    
