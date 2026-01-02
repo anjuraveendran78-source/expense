@@ -1,28 +1,4 @@
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Edit</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h2> Edit Transaction : {{ transac.id }}</h2>
-        <form method="POST"> 
-            {% csrf_token %}
-            {{ forms.as_p }}    
-            <button type="submit">Edit</button>  
-        </form>
-        <br>
-        <a href="{% url 'Transaction1_page' %}">Back to Transaction list</a>
-    </body>
-</html>
-
-
-{% comment %} {% load static %}
+{% load static %}
 {% load widget_tweaks %}
 
 <!DOCTYPE html>
@@ -104,4 +80,4 @@
   </div>
 
 </body>
-</html> {% endcomment %}
+</html> 

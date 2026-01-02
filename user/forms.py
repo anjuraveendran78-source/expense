@@ -67,7 +67,7 @@ class LoginForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['id', 'date', 'amount', 'category_id', 'Transaction_desc', 'Type']
+        fields = ['date', 'amount', 'category_id', 'Transaction_desc', 'Type']
 
         labels = {
             'category_id': 'Category',
@@ -76,23 +76,25 @@ class TransactionForm(forms.ModelForm):
 
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
-            'Type': forms.TextInput(attrs={
-                "placeholder": "Enter type of transaction",
-                "class": "form-control",
+
+            'Type': forms.Select(choices=[
+                ('Income', 'Income'),
+                ('Expense', 'Expense')
+            ], attrs={
+                'class': 'form-control'
             }),
+
             'amount': forms.NumberInput(attrs={
-                "placeholder": "Enter amount",
-                "class": "form-control",
+                'placeholder': 'Enter amount',
+                'class': 'form-control',
             }),
-            'id': forms.NumberInput(attrs={
-                "placeholder": "Enter Transaction id",
-                "class": "form-control",
-            }),
+
             'Transaction_desc': forms.TextInput(attrs={
-                "placeholder": "Enter Transaction description",
-                "class": "form-control",
+                'placeholder': 'Enter transaction description',
+                'class': 'form-control',
             }),
         }
+
 
 
 # ===================== CATEGORY FORM =====================

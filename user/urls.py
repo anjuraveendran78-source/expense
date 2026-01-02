@@ -10,14 +10,14 @@ urlpatterns = [
      path('user/dashboard1',views.Dashboard1_page, name='Dashboard1_page'),
      path('user/dashboard2',views.Dashboard2_page, name='Dashboard2_page'),
      path('user/reset',views.Reset_page, name='Reset_page'),
-     path('user/familyexpense',views.Familyexpense_page, name='Familyexpense_page'),
+     path('user/familyexpense',views.Familyexpense_page, name='user_familyexpense_page'),
      path('user/category',views.Category_page, name='Category_page'),
      path('user/Family',views.Familyreg_page, name='Familyreg_page'),
      path('user/UserHome_page',views.UserHome_page, name='UserHome_page'),
      path('user/FamHome_page',views.FamHome_page, name='FamHome_page'),
      path('user/reminder1',views.Reminder1_page, name='Reminder1_page'),
      path('user/reminder2',views.Reminder2_page, name='Reminder2_page'),
-     path('user/main_home',views.main_home, name='main_home'),
+     path('',views.main_home, name='main_home'),
 
     #List urls
      path('user/Transaction1',views.Transaction1_page, name='Transaction1_page'),
@@ -32,13 +32,13 @@ urlpatterns = [
      path('user/pay',views.paypage, name='paypage'),
      path('user/payment_send',views.payment_send, name='payment_send'),
      path('user/payment_confo',views.payment_confo, name='payment_confo'),
-     path('user/email',views.email_otp, name='email_otp'),
+    #  path('user/email',views.email_otp, name='email_otp'),
      
 
      #Edit and Delete functions urls
      path('user/member_delete/<int:id>/',views.member_delete,name='member_delete'),
      path('user/member_edit/<int:id>/',views.member_edit,name='member_edit'),
-    path('user_delete/<int:id>/', views.user_delete, name='user_delete'),
+     path('user_delete/<int:id>/', views.user_delete, name='user_delete'),
      path('user/user_edit/<int:id>/',views.user_edit_page,name='user_edit_page'),
      path('user/category_delete/<int:id>/',views.category_delete,name='category_delete'),
      path('user/category_edit/<int:id>/',views.category_edit_page,name='category_edit_page'),
@@ -50,7 +50,8 @@ urlpatterns = [
 
    #action
      path('user/user_reg1_action',views.user_reg1_page, name='user_reg1_page'),
-     path('user/user_reg2_action',views.user_reg2_page, name='user_reg2_page'),
+     path('Family', views.user_reg2_page, name='user_reg2_page'),
+
      path('user/user_reset_action',views.user_reset_page, name='user_reset_page'),
      path('user/user_login_action',views.user_login_page, name='user_login_page'),
      path('user/user_category_action',views.user_category_page, name='user_category_page'),
@@ -63,6 +64,11 @@ urlpatterns = [
       #reports
       path('user/reports/', views.reports_page, name='reports_page'),
       path('report/pdf/', views.generate_pdf, name='generate_pdf'),
+
+      path('forgot-password/', views.forgot_password, name='forgot_password'),
+      path('verify-otp/', views.verify_otp, name='verify_otp'),
+      path('reset-password/', views.reset_password, name='reset_password'),
+
 
   
 ]

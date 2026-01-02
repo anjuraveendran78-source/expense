@@ -5,7 +5,8 @@ from .forms import LoginForm, RegistrationForm,TransactionForm,DashboardForm,Res
 # from .util import get_phonepe_client,meta_info_generation,buil_request
 from django.urls import reverse
 from uuid import uuid4
-from .util import send_email
+# from .util import send_email
+from django.core.mail import send_mail
 import random
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
@@ -15,8 +16,9 @@ from django.utils.formats import get_format
 from django.shortcuts import render
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.contrib import messages
 from datetime import datetime, timedelta
-print("🔥 DATETIME IMPORT CHECK:", datetime)
+print("DATETIME IMPORT CHECK:", datetime)
 
 
 #BASIC Page Renders
@@ -122,7 +124,7 @@ def user_reg1_page(request):
             email_id=email_id,
             phn_no=phn_no,
             location=location,
-            role="user"   # 👈 Force correct role
+            role="user"   # user
         )
 
         return redirect("user_login_page")
@@ -131,33 +133,47 @@ def user_reg1_page(request):
 
 #family member Registration Action Pages
 
+
+
 def user_reg2_page(request):
+
     if request.method == "POST":
-        obj = Registration.objects.create(
-            username=request.POST.get("username"),
-            password=request.POST.get("password"),
-            confirm_password=request.POST.get("confirm_password"),
-            email_id=request.POST.get("email_id"),
-            phn_no=request.POST.get("phn_no"),
-            location=request.POST.get("location"),
-            role="family"   # 👈 Always family
-        )
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        email_id = request.POST.get("email_id")
+        phn_no = request.POST.get("phn_no")
+        location = request.POST.get("location")
 
-        print("Saved as:", obj.role)  # Debug
-        return redirect("Memberlist_page")
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            try:
+                Registration.objects.create(
+                    username=username,
+                    password=password,
+                    confirm_password=confirm_password,
+                    email_id=email_id,
+                    phn_no=phn_no,
+                    location=location,
+                    role="family"
+                )
+                messages.success(request, "Family member registered successfully.")
+            except:
+                messages.error(request, "Error in registering family member.")
 
-    return render(request, "familyreg.html")
+    return render(request, "famhome.html")
+
 
 #transaction, category, member, user list pages
 
 def Transaction1_page(request):
-    transactions = Transaction.objects.all()
+    transactions = Transaction.objects.filter(owner_type='user')
     return render(request, 'transaction_list1.html', {'transactions': transactions})
 
-
 def Transaction2_page(request):
-    trans = Transaction.objects.all()
-    return render(request, 'transaction_list2.html', {'forms':trans})
+    transactions = Transaction.objects.filter(owner_type='family')
+    return render(request, 'transaction_list2.html', {'transactions': transactions})
 
 def Categorylist_page(request):
     categories = Category.objects.all()
@@ -202,7 +218,6 @@ def member_delete(request, id):
     return redirect('Memberlist_page')
 
 
-
 def member_edit(request, id):
     member = get_object_or_404(Registration, id=id)
     if request.method == "POST":
@@ -229,6 +244,7 @@ def user_edit_page(request, id):
         form = RegistrationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+
             return redirect('userlist_page')
     else:
         form = RegistrationForm(instance=user)
@@ -299,48 +315,26 @@ def user_expense_page(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
         if form.is_valid():
-            form.save()
+            obj = form.save(commit=False)
+            obj.owner_type = 'user'
+            obj.save()
             return redirect('Transaction1_page')
-        else:
-            print(form.errors)
-            return HttpResponse(f"Form errors: {form.errors}")
-    form = TransactionForm()
-    return render(request, 'expense.html', {'forms': form})
+
+    return render(request, 'expense.html', {'forms': TransactionForm()})
 
 
 def user_familyexpense_page(request):
-    print("🔥 FAMILY EXPENSE VIEW HIT")
-
     if request.method == "POST":
-        print("POST DATA:", request.POST)
-
         form = TransactionForm(request.POST)
-
         if form.is_valid():
-            form.save()
-            print(" SAVED SUCCESSFULLY")
+            obj = form.save(commit=False)
+            obj.owner_type = 'family'
+            obj.save()
             return redirect('Transaction2_page')
-        else:
-            print(" FORM ERRORS:", form.errors)
-            return HttpResponse(f"<h1>Form Error</h1><pre>{form.errors}</pre>")
 
-    form = TransactionForm()
-    return render(request, 'familyexpense.html', {'forms': form})
+    return render(request, 'familyexpense.html', {'forms': TransactionForm()})
 
 
-# def user_reminder1_page(request):
-#     if request.method == "POST":
-#         form = ReminderForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('reminder_list1.html')   # stay on same page
-#     else:
-#         form = ReminderForm()
-#     reminders = Reminder.objects.all()  
-#     return render(request, 'reminder1.html', {
-#         'forms': form,
-#         'reminders': reminders,   
-#     })
 def user_reminder1_page(request):
     if request.method == "POST":
         form = ReminderForm(request.POST)
@@ -533,3 +527,61 @@ def generate_pdf(request):
     return response
 
 
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email', '').strip().lower()
+        print("EMAIL ENTERED:", email)
+        user = Registration.objects.filter(email_id__iexact=email).first()
+        print("USER FOUND:", user)
+        if user:
+            otp = str(random.randint(100000, 999999))
+            user.otp = otp
+            user.save()
+            print("OTP GENERATED:", otp)
+            send_mail(
+                'Password Reset OTP',
+                f'Your OTP is: {otp}',
+                'your_email@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+            request.session['reset_user'] = user.id
+            messages.success(request, "OTP sent to your email.")
+            return redirect('verify_otp')
+        else:
+            messages.error(request, "Email not registered.")
+    return render(request, 'forgot_password.html')
+
+
+def verify_otp(request):
+    if request.method == "POST":
+        entered_otp = request.POST.get('otp')
+        user_id = request.session.get('reset_user')
+        user = Registration.objects.get(id=user_id)
+
+        if user.otp == entered_otp:
+            return redirect('reset_password')
+        else:
+            messages.error(request, "Invalid OTP")
+
+    return render(request, 'verify_otp.html')
+
+def reset_password(request):
+    user_id = request.session.get('reset_user')
+    user = Registration.objects.get(id=user_id)
+
+    if request.method == "POST":
+        p1 = request.POST.get('password')
+        p2 = request.POST.get('confirm_password')
+
+        if p1 != p2:
+            messages.error(request, "Passwords do not match")
+        else:
+            user.password = p1
+            user.confirm_password = p1
+            user.otp = None
+            user.save()
+            messages.success(request, "Password reset successful")
+            return redirect('login_page')
+
+    return render(request, 'reset_password.html')

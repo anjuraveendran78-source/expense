@@ -32,22 +32,23 @@
 <!-- ================= FILTER BAR ================= -->
 <div class="bg-white p-4 rounded-lg shadow mb-8 flex flex-wrap items-center gap-4">
 
-  <form method="get" class="flex flex-wrap gap-3 items-center">
+  <form method="get" class="flex flex-wrap gap-4 items-center bg-white p-4 rounded-lg shadow mb-6">
 
-    <select name="range" class="border p-2 rounded">
-      <option value="">Select Range</option>
-      <option value="this_month">This Month</option>
-      <option value="last_6_months">Last 6 Months</option>
-    </select>
+  <select name="range" id="rangeSelect" class="border p-2 rounded">
+    <option value="">Select Range</option>
+    <option value="this_month">This Month</option>
+    <option value="last_6_months">Last 6 Months</option>
+  </select>
 
-    <input type="date" name="start" class="border p-2 rounded">
-    <input type="date" name="end" class="border p-2 rounded">
+  <input type="date" name="start" id="startDate" class="border p-2 rounded">
+  <input type="date" name="end" id="endDate" class="border p-2 rounded">
 
-    <button class="bg-green-600 text-white px-4 py-2 rounded">
-      Apply Filter
-    </button>
+  <button class="bg-green-600 text-white px-4 py-2 rounded">
+    Apply Filter
+  </button>
 
-  </form>
+</form>
+
 
   <a href="{% url 'generate_pdf' %}"
      class="bg-blue-600 text-white px-4 py-2 rounded ml-auto">
@@ -109,6 +110,8 @@
 <script>
 window.onload = function() {
 
+  /* =================== CHART DATA =================== */
+
   const months = {{ months_json|safe }};
   const incomeData = {{ income_json|safe }};
   const expenseData = {{ expense_json|safe }};
@@ -138,8 +141,27 @@ window.onload = function() {
     }
   });
 
+  /* =================== FILTER UI LOGIC =================== */
+
+  const rangeSelect = document.getElementById("rangeSelect");
+  const startDate = document.getElementById("startDate");
+  const endDate = document.getElementById("endDate");
+
+  function toggleDates() {
+    if (rangeSelect.value === "") {
+      startDate.style.display = "block";
+      endDate.style.display = "block";
+    } else {
+      startDate.style.display = "none";
+      endDate.style.display = "none";
+    }
+  }
+
+  rangeSelect.addEventListener("change", toggleDates);
+  toggleDates(); // run once on page load
 }
 </script>
+
 
 </body>
 

@@ -15,6 +15,8 @@ class Registration(models.Model):
     )
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    otp = models.CharField(max_length=6, blank=True, null=True)
+
 
 
 class Notification(models.Model):
@@ -26,20 +28,16 @@ class Notification(models.Model):
     Description = models.CharField(max_length=50)
 
 class Transaction(models.Model):
-     id = models.IntegerField(max_length=20,primary_key=True)
-     date = models.DateField()
-     category_id = models.ForeignKey(
-         'Category',
-         on_delete=models.CASCADE,
-         related_name='Categories')
-     
-     amount = models.FloatField(max_length=100)
-     Transaction_desc = models.CharField(max_length=100)
-     Type = models.CharField(max_length=100)
+    id = models.AutoField(primary_key=True)
+    date = models.DateField()
+    category_id = models.ForeignKey('Category', on_delete=models.CASCADE)
+    amount = models.FloatField()
+    Transaction_desc = models.CharField(max_length=100)
+    Type = models.CharField(max_length=100)
 
-     def __str__(self):
-        return self.Type
-     
+    owner_type = models.CharField(max_length=10)  
+    # values: 'user' or 'family'
+    
 
 class  Category(models.Model):
     category_id = models.IntegerField(max_length=50,primary_key=True)   

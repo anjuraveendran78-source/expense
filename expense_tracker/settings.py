@@ -140,17 +140,24 @@ STATIC_URLS_DIRS = [BASE_DIR / 'static']
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CLIENT_ID = "M230HEMRX1T0G_2512041119"
-CLIENT_SECRET = "NTJlZTg3NTYtNDgzZC00MzI1LTllNzUtZGYyY2Q5NThiYzZm"
-CLIENT_VERSION = 1
-PHONEPE_ENV = "SANDBOX"
-EMAIL_NAME = "akaexpense23@gmail.com"
-EMAIL_PASSWORD = 'ioqc zujl pvkx ujvs'
+# CLIENT_ID = "M230HEMRX1T0G_2512041119"
+# CLIENT_SECRET = "NTJlZTg3NTYtNDgzZC00MzI1LTllNzUtZGYyY2Q5NThiYzZm"
+# CLIENT_VERSION = 1
+# PHONEPE_ENV = "SANDBOX"
+# EMAIL_NAME = "akaexpense23@gmail.com"
+# EMAIL_PASSWORD = 'ioqc zujl pvkx ujvs'
 
 
 
 
 TAILWIND_APP_NAME = 'theme'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'akaexpense23@gmail.com'
+EMAIL_HOST_PASSWORD = 'ioqc zujl pvkx ujvs'
+
