@@ -17,8 +17,6 @@ class Registration(models.Model):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     otp = models.CharField(max_length=6, blank=True, null=True)
 
-
-
 class Notification(models.Model):
     id = models.IntegerField(max_length=20,primary_key=True)
     time = models.CharField(max_length=50)
@@ -52,5 +50,10 @@ class Reminder(models.Model):
     time = models.CharField(max_length=50)
     Reminder_desc = models.CharField(max_length=100)
     Email_id = models.EmailField(max_length=100)
+
+    owner_type = models.CharField(
+        max_length=10,
+        choices=[('user', 'User'), ('family', 'Family')]
+    )
 
 

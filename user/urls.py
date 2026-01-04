@@ -15,17 +15,17 @@ urlpatterns = [
      path('user/Family',views.Familyreg_page, name='Familyreg_page'),
      path('user/UserHome_page',views.UserHome_page, name='UserHome_page'),
      path('user/FamHome_page',views.FamHome_page, name='FamHome_page'),
-     path('user/reminder1',views.Reminder1_page, name='Reminder1_page'),
-     path('user/reminder2',views.Reminder2_page, name='Reminder2_page'),
+     path('user/reminder/add/',views.Reminder1_page, name='Reminder1_page'),
+     path('user/reminder/family/add/',views.Reminder2_page, name='Reminder2_page'),
      path('',views.main_home, name='main_home'),
 
     #List urls
      path('user/Transaction1',views.Transaction1_page, name='Transaction1_page'),
      path('user/Transaction2',views.Transaction2_page, name='Transaction2_page'),
      path('user/categorylist',views.Categorylist_page, name='Categorylist_page'),
-     path('user/reminderlist1',views. reminder_list1, name='reminder_list1'),
-     path('user/reminderlist2',views. reminder_list2, name='reminder_list2'),
-     path('user/memberlist',views.Memberlist_page , name='Memberlist_page'),
+     path('user/reminder/list/',views. reminder_list1, name='reminder_list1'),
+     path('user/reminder/family/list/',views. reminder_list2, name='reminder_list2'),
+     path('user/member/list',views.Memberlist_page , name='Memberlist_page'),
      path('user/userlist',views.userlist_page , name='userlist_page'),
      
      #Email and payment urls
@@ -50,8 +50,6 @@ urlpatterns = [
 
    #action
      path('user/user_reg1_action',views.user_reg1_page, name='user_reg1_page'),
-     path('Family', views.user_reg2_page, name='user_reg2_page'),
-
      path('user/user_reset_action',views.user_reset_page, name='user_reset_page'),
      path('user/user_login_action',views.user_login_page, name='user_login_page'),
      path('user/user_category_action',views.user_category_page, name='user_category_page'),

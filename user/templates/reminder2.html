@@ -1,23 +1,91 @@
+{% load static %}
+{% load widget_tweaks %}
+
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Make Reminders</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
 
-{% include 'member.html' %}
+<body class="bg-gray-100 min-h-screen">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Reminder Page</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h2>Make Reminders</h2>
-      <form method="post"action ="{% url "user_reminder2_page"%}">
-          {% csrf_token %}
-          {{ forms.as_p}}
-          <button type="Submit">OK</button>
-        </form>
-  
-        
-    </body>
+<!-- ====================== HEADER ====================== -->
+<header class="bg-black shadow-sm">
+  <nav class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+      <img src="{% static 'image/logo2.png' %}" class="h-8 w-20" />
+      <h1 class="text-2xl font-bold text-green-600">Expense Tracker</h1>
+
+      <div class="space-x-4">
+          <a href="{% url 'UserHome_page' %}" class="px-3 py-1 bg-green-600 text-white rounded">Home</a>
+          <a href="{% url 'main_home' %}" class="px-3 py-1 border border-green-600 text-green-600 rounded">Logout</a>
+      </div>
+  </nav>
+</header>
+
+<div class="flex">
+
+<!-- Sidebar -->
+<aside class="w-64 bg-white shadow-md p-6">
+  <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
+  <ul class="space-y-3 text-gray-700">
+      <li><a href="{% url 'Register_page' %}">Register Family</a></li>
+      <li><a href="{% url 'user_familyexpense_page' %}">Expense</a></li>
+      <li><a href="{% url 'reports_page' %}">Report</a></li>
+      <li><a href="{% url 'Category_page' %}">Category</a></li>
+      <li><a href="{% url 'Reminder2_page' %}">Reminders</a></li>
+      <li><a href="{% url 'Memberlist_page' %}">Family Member List</a></li>
+      <li><a href="{% url 'Transaction2_page' %}">Transaction List</a></li>
+      <li><a href="{% url 'Categorylist_page' %}">Category List</a></li>
+  </ul>
+</aside>
+
+<!-- ====================== MAIN FORM ====================== -->
+<main class="flex-1 p-10">
+
+  <div class="max-w-xl bg-white rounded-xl shadow-lg p-8">
+
+    <h1 class="text-2xl font-bold mb-6">Make Reminder</h1>
+
+    <form method="post" action="{% url 'user_reminder2_page' %}" class="space-y-5">
+      {% csrf_token %}
+
+      <div>
+        {{ forms.date.label_tag }}
+        {{ forms.date|add_class:"w-full border rounded-lg p-2" }}
+        {{ forms.date.errors }}
+      </div>
+
+      <div>
+        {{ forms.time.label_tag }}
+        {{ forms.time|add_class:"w-full border rounded-lg p-2" }}
+        {{ forms.time.errors }}
+      </div>
+
+      <div>
+        {{ forms.Reminder_desc.label_tag }}
+        {{ forms.Reminder_desc|add_class:"w-full border rounded-lg p-2" }}
+        {{ forms.Reminder_desc.errors }}
+      </div>
+
+      <div>
+        {{ forms.Email_id.label_tag }}
+        {{ forms.Email_id|add_class:"w-full border rounded-lg p-2" }}
+        {{ forms.Email_id.errors }}
+      </div>
+
+
+      <button type="submit"
+        class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">
+        Save Reminder
+      </button>
+    </form>
+
+  </div>
+
+</main>
+</div>
+
+</body>
 </html>

@@ -1,4 +1,3 @@
-
 {% load static %}
 {% load widget_tweaks %}
 
@@ -7,76 +6,72 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {% comment %} <script src="https://cdn.tailwindcss.com"></script> {% endcomment %}
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <title>Register</title>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gray-100">
-   <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border-2 border-green-400"> 
-   
-   <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
+
+<body class="min-h-screen flex flex-col bg-blue-50">
+
+<!-- ====================== HEADER ====================== -->
+<header class="bg-blue-50 shadow-sm">
+  <nav class="max-w-7xl mx-auto px-8 py-4 grid grid-cols-3 items-center">
+
+    <div class="flex items-center gap-3 justify-self-start">
+      <img src="{% static 'image/logo.png' %}" alt="logo" class="h-[35px] w-15 rounded-lg" />
+    </div>
+
+    <h1 class="text-3xl font-bold text-slate-800 text-center">
+      Expense Tracker
+    </h1>
+
+    <div class="flex gap-2 justify-self-end">
+
+      <a href="{% url 'login_page' %}"
+         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        Login
+      </a>
+    </div>
+
+  </nav>
+</header>
+
+
+<!-- ====================== FORM SECTION ====================== -->
+<main class="flex-grow flex items-center justify-center">
+
+  <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border-2 border-green-400">
+
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">
       Register Here
     </h2>
 
-    <form method="post"action ="{% url 'user_reg1_page' %}" class="space-y-4">
+    <form method="post" action="{% url 'user_reg1_page' %}" class="space-y-4">
       {% csrf_token %}
 
-      <!-- Username -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          {{forms.username.label_tag}}
-          {{ forms.username|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-      </div>
+      {% for field in forms %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ field.label }}
+          </label>
+          {{ field|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
+        </div>
+      {% endfor %}
 
-     <!-- Password -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-     {{ forms.password.label_tag }}
-     {{ forms.password|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-</div>
-
-<!-- Confirm Password -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-    {{ forms.confirm_password.label_tag }}
-    {{ forms.confirm_password|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-</div>
-
-<!-- Email -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-   {{ forms.email_id.label_tag }}
-   {{ forms.email_id|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-  
-</div>
-
-<!-- Phone -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-    {{ forms.phn_no.label_tag }}
-    {{ forms.phn_no|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-
-</div>
-<!-- Location -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-   {{ forms.location.label_tag }}
-   {{ forms.location|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-800" }}
-  
-</div>
-      <!-- Button -->
-      <button
-        type="submit"
-        class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+      <button type="submit"
+        class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition">
         Register
       </button>
-  
+
     </form>
   </div>
+
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="bg-blue-50 py-4 border-t text-center text-sm text-gray-500">
+  © 2025 AKA / Expense Tracker — All Rights Reserved. <br>
+  Developed by Arun, Krishnendhu and Alan
+</footer>
+
 </body>
 </html>
-
-
-
-

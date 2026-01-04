@@ -78,13 +78,13 @@ def Reminder2_page(request):
     return render(request, 'reminder2.html', {'forms':reminder2})
 
 def reminder_list1(request):
-    reminders = Reminder.objects.all()
-    print("REMINDERS:", reminders)   # DEBUG LINE
+    reminders = Reminder.objects.filter(owner_type='user')
     return render(request, 'reminder_list1.html', {'reminders': reminders})
 
 def reminder_list2(request):
-    remind2 = Reminder.objects.all()
-    return render(request, 'reminder_list2.html',{'forms':remind2})
+    reminders = Reminder.objects.filter(owner_type='family')
+    return render(request, 'reminder_list2.html', {'reminders': reminders})
+
 
 # Login Action Page
 
@@ -188,9 +188,6 @@ def userlist_page(request):
     users = Registration.objects.filter(role='user')
     return render(request, 'user_list.html', {'forms': users})
 
-
-
-
 # Edit and Delete functions
 
 #1.Transaction
@@ -229,9 +226,7 @@ def member_edit(request, id):
         form = RegistrationForm(instance=member)
     return render(request, "member_edit.html", {'forms': form, 'member': member})
 
-
 #3.User 
-
 def user_delete(request, id):
     user = get_object_or_404(Registration, id=id)
     user.delete()
@@ -268,9 +263,7 @@ def category_edit_page(request, id):
         form = CategoryForm(instance=cate)
     return render(request, "category_edit.html", {'forms': form, 'cate':cate})
 
-
 #5.Reminder of User
-
 
 def remind1_delete(request, id):
     user = Reminder.objects.get(id=id)
@@ -288,7 +281,6 @@ def remind1_edit_page(request, id):
         form = ReminderForm(instance=remind)
     return render(request, "remind1_edit.html", {'forms': form, 'remind':remind})
 
- 
 def user_reset_page(request):
     if request.method == "POST":
        form = RegistrationForm(request.POST)
@@ -296,7 +288,6 @@ def user_reset_page(request):
            form.save()
        return HttpResponse("password_reseted")   
     return HttpResponse("Failed")
-
 
 def user_category_page(request):
     if request.method == "POST":
@@ -310,7 +301,6 @@ def user_category_page(request):
     form = CategoryForm()
     return render(request, 'category.html', {'forms': form})
 
-
 def user_expense_page(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
@@ -321,7 +311,6 @@ def user_expense_page(request):
             return redirect('Transaction1_page')
 
     return render(request, 'expense.html', {'forms': TransactionForm()})
-
 
 def user_familyexpense_page(request):
     if request.method == "POST":
@@ -339,24 +328,21 @@ def user_reminder1_page(request):
     if request.method == "POST":
         form = ReminderForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('reminder_list1')   
-    else:
-        form = ReminderForm()
-    return render(request, 'reminder1.html', {'forms': form})
+            reminder = form.save(commit=False)
+            reminder.owner_type = 'user'
+            reminder.save()
+            return redirect('reminder_list1')   #redirect after save
+
 
 
 def user_reminder2_page(request):
     if request.method == "POST":
         form = ReminderForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('reminder_list2')
-        else:
-            print(form.errors)
-    else:
-        form = ReminderForm()
-    return render(request, 'reminder2.html', {'forms': form})
+            reminder = form.save(commit=False)
+            reminder.owner_type = 'family'
+            reminder.save()
+            return redirect('reminder_list2')   # redirect after save
 
 
 #phonepe functions
