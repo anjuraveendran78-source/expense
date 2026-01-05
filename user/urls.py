@@ -43,9 +43,14 @@ urlpatterns = [
      path('user/category_delete/<int:id>/',views.category_delete,name='category_delete'),
      path('user/category_edit/<int:id>/',views.category_edit_page,name='category_edit_page'),
      path('user/remind1_delete/<int:id>/',views.remind1_delete,name='remind1_delete'),
+     path('user/remind2_delete/<int:id>/',views.remind2_delete,name='remind2_delete'),
      path('user/remind1_edit/<int:id>/',views.remind1_edit_page,name='remind1_edit_page'),
+     path('user/remind2_edit/<int:id>/', views.remind2_edit_page, name='remind2_edit'),
      path('user/trans1_delete/<int:id>/',views.trans1_delete,name='trans1_delete'),
-     path('user/trans1_edit/<int:id>/',views.trans1_edit,name='trans1_edit'),
+     path('user/trans1_edit/<int:id>/', views.trans1_edit, name='trans1_edit'),
+     path('user/trans2_edit/<int:id>/', views.trans2_edit, name='trans2_edit'),
+     path('user/trans2_delete/<int:id>/', views.trans2_delete, name='trans2_delete'),
+
 
 
    #action

@@ -1,83 +1,42 @@
-{% load static %}
 {% load widget_tweaks %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Transaction Details</title>
+  <title>Edit Transaction</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
 
-  <div class="flex">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-md min-h-screen p-6">
-      <h2 class="text-xl font-bold mb-6 text-gray-700">Menu</h2>
-      <ul class="space-y-3 text-blue-600">
-        <li><a href="#" class="hover:text-blue-800">Manage Family</a></li>
-        <li><a href="#" class="hover:text-blue-800">Expense</a></li>
-        <li><a href="#" class="hover:text-blue-800">Report</a></li>
-        <li><a href="#" class="hover:text-blue-800">Category</a></li>
-        <li><a href="#" class="hover:text-blue-800">Reminders</a></li>
-        <li><a href="#" class="hover:text-blue-800">Family Member List</a></li>
-        <li><a href="#" class="hover:text-blue-800">Payment</a></li>
-        <li><a href="#" class="hover:text-blue-800">Reminder List</a></li>
-        <li><a href="#" class="hover:text-blue-800">Transaction List</a></li>
-        <li><a href="#" class="hover:text-blue-800">Category List</a></li>
-        <li><a href="#" class="hover:text-blue-800">User List</a></li>
-      </ul>
-    </aside>
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
 
-    <!-- Main Content -->
-    <main class="flex-1 p-8">
+    <h2 class="text-2xl font-bold mb-6 text-center">
+      Edit Transaction
+    </h2>
 
-      <h1 class="text-3xl font-bold mb-6 text-gray-800">
-        Transaction Details
-      </h1>
+    <form method="post">
+      {% csrf_token %}
 
-      <!-- Table Container -->
-      <div class="bg-white shadow-md rounded-lg overflow-x-auto">
-        <table class="min-w-full border border-gray-200">
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Date
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Amount
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Category
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Spend By
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Transaction Description
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border">
-                Type of Transaction
-              </th>
-            </tr>
-          </thead>
+      <div class="space-y-4">
 
-          <tbody class="bg-white">
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-2 border">--</td>
-              <td class="px-4 py-2 border">--</td>
-              <td class="px-4 py-2 border">--</td>
-              <td class="px-4 py-2 border">--</td>
-              <td class="px-4 py-2 border">--</td>
-              <td class="px-4 py-2 border">--</td>
-            </tr>
-          </tbody>
-        </table>
+        {{ forms.date|add_class:"w-full border p-2 rounded" }}
+        {{ forms.amount|add_class:"w-full border p-2 rounded" }}
+        {{ forms.category_id|add_class:"w-full border p-2 rounded" }}
+        {{ forms.Transaction_desc|add_class:"w-full border p-2 rounded" }}
+        {{ forms.Type|add_class:"w-full border p-2 rounded" }}
+
       </div>
 
-    </main>
+      <div class="mt-6 text-center">
+        <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+          Update Transaction
+        </button>
+      </div>
+
+    </form>
+
   </div>
 
 </body>
-</html> 
+</html>

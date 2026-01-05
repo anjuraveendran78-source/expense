@@ -19,6 +19,7 @@ from xhtml2pdf import pisa
 from django.contrib import messages
 from datetime import datetime, timedelta
 print("DATETIME IMPORT CHECK:", datetime)
+from django.conf import settings
 
 
 #BASIC Page Renders
@@ -133,8 +134,6 @@ def user_reg1_page(request):
 
 #family member Registration Action Pages
 
-
-
 def user_reg2_page(request):
 
     if request.method == "POST":
@@ -164,7 +163,6 @@ def user_reg2_page(request):
 
     return render(request, "famhome.html")
 
-
 #transaction, category, member, user list pages
 
 def Transaction1_page(request):
@@ -183,7 +181,6 @@ def Memberlist_page(request):
     members = Registration.objects.filter(role='family')
     return render(request, 'fam_member.html', {'members': members})
 
-
 def userlist_page(request):
     users = Registration.objects.filter(role='user')
     return render(request, 'user_list.html', {'forms': users})
@@ -197,15 +194,36 @@ def trans1_delete(request, id):
     return redirect('Transaction1_page')
 
 def trans1_edit(request, id):
-    transac = get_object_or_404(Transaction, id=id)
+    transaction = Transaction.objects.get(id=id)
+
     if request.method == "POST":
-        form = TransactionForm(request.POST, instance=transac)
+        form = TransactionForm(request.POST, instance=transaction)
         if form.is_valid():
             form.save()
             return redirect('Transaction1_page')
     else:
-        form = TransactionForm(instance=transac)
-    return render(request, "trans1_edit.html", {'forms': form, 'transac': transac})
+        form = TransactionForm(instance=transaction)
+
+    return render(request, 'trans1_edit.html', {'forms': form})
+
+def trans2_edit(request, id):
+    transaction = Transaction.objects.get(id=id)
+
+    if request.method == "POST":
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.owner_type = 'family'
+            transaction.save()
+            return redirect('Transaction2_page')
+    else:
+        form = TransactionForm(instance=transaction)
+
+    return render(request, 'trans2_edit.html', {'forms': form})
+
+def trans2_delete(request, id):
+    Transaction.objects.filter(id=id).delete()
+    return redirect('Transaction2_page')
 
 #2.Family Member 
 
@@ -270,6 +288,11 @@ def remind1_delete(request, id):
     user.delete()
     return redirect('reminder_list1')
 
+def remind2_delete(request, id):
+    user = Reminder.objects.get(id=id)
+    user.delete()
+    return redirect('reminder_list2')
+
 def remind1_edit_page(request, id):
     remind = get_object_or_404(Reminder, id=id)
     if request.method == "POST":
@@ -280,6 +303,17 @@ def remind1_edit_page(request, id):
     else:
         form = ReminderForm(instance=remind)
     return render(request, "remind1_edit.html", {'forms': form, 'remind':remind})
+
+def remind2_edit_page(request, id):
+    remind = get_object_or_404(Reminder, id=id)
+    if request.method == "POST":
+        form = ReminderForm(request.POST, instance=remind)
+        if form.is_valid():
+            form.save()
+            return redirect('reminder_list2')
+    else:
+        form = ReminderForm(instance=remind)
+    return render(request, "remind2_edit.html", {'forms': form, 'remind':remind})
 
 def user_reset_page(request):
     if request.method == "POST":
@@ -327,22 +361,71 @@ def user_familyexpense_page(request):
 def user_reminder1_page(request):
     if request.method == "POST":
         form = ReminderForm(request.POST)
+
         if form.is_valid():
             reminder = form.save(commit=False)
             reminder.owner_type = 'user'
             reminder.save()
-            return redirect('reminder_list1')   #redirect after save
+
+            # ================= SEND EMAIL =================
+            subject = "New Reminder Created"
+            message = f"""
+Hello,
+
+Your reminder has been successfully created.
+
+Date : {reminder.date}
+Time : {reminder.time}
+Description : {reminder.Reminder_desc}
+
+Thank you for using Expense Tracker.
+"""
+
+            recipient_list = [reminder.Email_id]
+
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                recipient_list,
+                fail_silently=False
+            )
+
+            return redirect('reminder_list1')
+   #redirect after save
 
 
 
 def user_reminder2_page(request):
     if request.method == "POST":
         form = ReminderForm(request.POST)
+
         if form.is_valid():
             reminder = form.save(commit=False)
             reminder.owner_type = 'family'
             reminder.save()
-            return redirect('reminder_list2')   # redirect after save
+
+            subject = "Family Reminder Created"
+            message = f"""
+Hello,
+
+A new family reminder has been created.
+
+Date : {reminder.date}
+Time : {reminder.time}
+Description : {reminder.Reminder_desc}
+"""
+
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [reminder.Email_id],
+                fail_silently=False
+            )
+
+            return redirect('reminder_list2')
+# redirect after save
 
 
 #phonepe functions
