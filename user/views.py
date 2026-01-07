@@ -654,3 +654,5 @@ def reset_password(request):
             return redirect('login_page')
 
     return render(request, 'reset_password.html')
+
+#end of view functions
