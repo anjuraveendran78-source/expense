@@ -1,59 +1,10 @@
 {% load static %}
 {% load widget_tweaks %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Expense</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-
-<body class="min-h-screen bg-gray-100 flex flex-col">
-
-<!-- ================= HEADER ================= -->
-<header class="bg-blue-50 shadow-sm">
-  <nav class="max-w-7xl mx-auto px-8 py-4 grid grid-cols-3 items-center">
-
-    <!-- Logo -->
-    <div class="flex items-center gap-3">
-      <img src="{% static 'image/logo.png' %}" alt="logo" class="h-[35px] rounded-lg" />
-    </div>
-
-    <!-- Title -->
-    <h1 class="text-3xl font-bold text-slate-800 text-center">
-      Expense Tracker
-    </h1>
-
-    <!-- Action Button -->
-    <div class="flex gap-2 justify-self-end">
-      <a href="{% url 'UserHome_page' %}"
-         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg
-                hover:bg-slate-800 hover:text-white transition">
-        User Home
-      </a>
-      <a href="{% url 'main_home' %}"
-          class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
-              Logout
-</a>
-    </div>
-
-  </nav>
-</header>
-
-
+{% include 'user_header.html' %}
 <!-- ================= PAGE BODY ================= -->
 <div class="flex flex-1">
 
-  <!-- ===== Sidebar ===== -->
-  <aside class="w-64 bg-white shadow-md p-6">
-    <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-    <ul class="space-y-3">
-      <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-      <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">Transaction List</a></li>
-    </ul>
-  </aside>
-
+  {% include 'sidebar.html' %}
   <!-- ===== Main Content ===== -->
   <main class="flex-1 p-10 flex justify-center items-start">
 
@@ -111,12 +62,3 @@
   </main>
 
 </div>
-
-<!-- ================= FOOTER ================= -->
-<footer class="bg-black py-4 border-t text-center text-sm text-gray-300">
-  © 2025 AKA / Expense Tracker — All Rights Reserved. <br>
-  Developed by Arun, Krishnendhu and Alan
-</footer>
-
-</body>
-</html>

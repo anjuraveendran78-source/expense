@@ -1,39 +1,4 @@
-{% comment %} <!DOCTYPE html>
-{% include 'user.html' %}
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Category list</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h1> Category List</h1>
-        <table border="1">
-            <tr>
-                <th>Category id</th>
-                <th>Category</th>
-            </tr>    
-            
-            {% for c in forms %}
-            <tr>
-                <td>{{ c.category_id }}</td>
-                <td>{{ c.category_type}}</td>
-                <td>
-                 <a href="{% url 'category_delete' c.category_id %}">Delete</a>
-                 <a href="{% url 'category_edit_page' c.category_id %}">Edit</a>
-                </td>
-            </tr>
-            
-            {% endfor %}
-        </table>
-        
 
-        
-    </body>
-</html> {% endcomment %}
 
 {% load static %}
 {% load widget_tweaks %}
@@ -48,49 +13,12 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
   
-   <!-- ====================== HEADER ====================== -->
-    <header class="bg-black shadow-sm cover">
-        <nav class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-            <img src="{% static 'image/logo2.png' %}" alt="logo" class="h-25px w-20 mr-3" />
-            <h1 class="text-2xl font-bold text-green-600">
-             Expense Tracker
-            </h1>
-
-            <div class="space-x-4">
-                <a href="{% url  'UserHome_page' %}"
-                    class="p-2 text-sm font-medium bg-green-600 text-white rounded hover:bg-green-700">
-                    Home
-                </a>
-               
-                <a href="{% url 'main_home' %}"
-                    class="px-4 py-2 text-sm font-medium border border-green-600 text-green-600 rounded hover:bg-blue-50">
-                    Logout
-                </a>
-         
-           
-            </div>
-        </nav>
-    </header>
+   {% include 'user_header.html' %}
 
 <div class="flex">
 
   <!-- Sidebar -->
-  <aside class="w-64 min-h-screen bg-white shadow-md p-6">
-      <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-      <ul class="space-y-3 text-gray-700">
-        <li><a href="{% url 'Familyreg_page' %}" class="hover:text-indigo-600">Register Family</a></li>
-        <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-       <li><a href="{% url 'reports_page' %}" class="hover:text-indigo-600">Report</a></li>
-        <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
-        <li><a href="{% url 'Reminder1_page' %}" class="hover:text-indigo-600">Reminders</a></li>
-        <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600">Family Member List</a></li>
-        <li><a href="{% url 'paypage' %}" class="hover:text-indigo-600">Payment</a></li>
-        <li><a href="{% url 'reminder_list1' %}" class="hover:text-indigo-600">Reminder List</a></li>
-        <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">Transaction List</a></li>
-        <li><a href="{% url 'Categorylist_page' %}" class="hover:text-indigo-600">Category List</a></li>
-        {% comment %} <li><a href="#" class="hover:text-indigo-600">User List</a></li> {% endcomment %}
-      </ul>
-    </aside>
+    {% include 'sidebar.html' %}
   <!-- Main Content -->
   <main class="flex-1 p-8">
 

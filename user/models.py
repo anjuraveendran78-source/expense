@@ -2,7 +2,7 @@ from unicodedata import category
 from django.db import models # type: ignore
 
 class Registration(models.Model):
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100,unique=True)
     password = models.CharField(max_length=100)
     confirm_password = models.CharField(max_length=100)
     email_id = models.EmailField()
@@ -25,6 +25,13 @@ class Notification(models.Model):
     send_to = models.EmailField(max_length=50)
     Description = models.CharField(max_length=50)
 
+class Category(models.Model):
+    category_type = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.category_type
+    
+    
 class Transaction(models.Model):
     id = models.AutoField(primary_key=True)
     date = models.DateField()
@@ -37,12 +44,8 @@ class Transaction(models.Model):
     # values: 'user' or 'family'
     
 
-class  Category(models.Model):
-    category_id = models.IntegerField(max_length=50,primary_key=True)   
-    category_type = models.CharField(max_length=100) 
 
-    def __str__(self):
-        return self.category_type
+
     
      
 class Reminder(models.Model):

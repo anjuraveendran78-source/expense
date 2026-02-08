@@ -102,13 +102,9 @@ class TransactionForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['category_id', 'category_type']
+        fields = ['category_type']
 
         widgets = {
-            'category_id': forms.NumberInput(attrs={
-                "placeholder": "Enter category id",
-                "class": "form-control",
-            }),
             'category_type': forms.TextInput(attrs={
                 "placeholder": "Enter category type",
                 "class": "form-control",

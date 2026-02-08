@@ -12,44 +12,12 @@
 <body class="bg-gray-100 min-h-screen">
 
 <!-- ====================== HEADER ====================== -->
-<header class="bg-black shadow-sm">
-  <nav class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <img src="{% static 'image/logo2.png' %}" alt="logo" class="h-8 w-20" />
-      <h1 class="text-2xl font-bold text-green-600">Expense Tracker</h1>
-    </div>
-
-    <div class="space-x-4">
-      <a href="{% url 'UserHome_page' %}"
-         class="p-2 text-sm font-medium bg-green-600 text-white rounded hover:bg-green-700">
-        Home
-      </a>
-      <a href="{% url 'main_home' %}"
-         class="px-4 py-2 text-sm font-medium border border-green-600 text-green-600 rounded hover:bg-blue-50">
-        Logout
-      </a>
-    </div>
-  </nav>
-</header>
+{% include 'user_header.html' %}
 
 <div class="flex">
 
   <!-- ====================== SIDEBAR ====================== -->
-  <aside class="w-64 min-h-screen bg-white shadow-md p-6">
-    <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-    <ul class="space-y-3 text-gray-700">
-      <li><a href="{% url 'Familyreg_page' %}" class="hover:text-indigo-600">Register Family</a></li>
-      <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-       <li><a href="{% url 'reports_page' %}" class="hover:text-indigo-600">Report</a></li>
-      <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
-      <li><a href="{% url 'Reminder1_page' %}" class="hover:text-indigo-600">Reminders</a></li>
-      <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600 font-semibold">Family Member List</a></li>
-      <li><a href="{% url 'paypage' %}" class="hover:text-indigo-600">Payment</a></li>
-      <li><a href="{% url 'reminder_list1' %}" class="hover:text-indigo-600">Reminder List</a></li>
-      <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">Transaction List</a></li>
-      <li><a href="{% url 'Categorylist_page' %}" class="hover:text-indigo-600">Category List</a></li>
-    </ul>
-  </aside>
+    {% include 'sidebar.html' %}
 
   <!-- ====================== MAIN CONTENT ====================== -->
   <main class="flex-1 p-8">

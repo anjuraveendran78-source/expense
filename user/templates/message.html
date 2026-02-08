@@ -62,3 +62,11 @@
     </div>
   {% endfor %}
 </div>
+
+
+
+<script>
+  document.querySelectorAll('.toast-item').forEach(el => {
+    setTimeout(() => el.remove(), 5200);
+  });
+</script>

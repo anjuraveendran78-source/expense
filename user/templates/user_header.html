@@ -1,0 +1,28 @@
+{% load static %}
+{% include 'message.html' %}
+<header class="bg-blue-50 shadow-sm">
+  <nav class="max-w-7xl mx-auto px-8 py-4 grid grid-cols-3 items-center">
+
+    <div class="flex items-center gap-3 justify-self-start">
+      <img src="{% static 'image/logo.png' %}" alt="logo" class="h-[35px] w-15 rounded-lg" />
+    </div>
+
+    <h1 class="text-3xl font-bold text-slate-800 text-center">
+      Expense Tracker
+    </h1>
+
+    <div class="flex gap-2 justify-self-end">
+      <a href="{% url 'UserHome_page' %}"
+         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        Home
+      </a>
+               
+                <a href="{% url 'main_home' %}"
+                    class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                    Logout
+                </a>
+         
+           
+            </div>
+        </nav>
+    </header>

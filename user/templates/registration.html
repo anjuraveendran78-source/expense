@@ -12,28 +12,7 @@
 
 <body class="min-h-screen flex flex-col bg-blue-50">
 
-<!-- ====================== HEADER ====================== -->
-<header class="bg-blue-50 shadow-sm">
-  <nav class="max-w-7xl mx-auto px-8 py-4 grid grid-cols-3 items-center">
 
-    <div class="flex items-center gap-3 justify-self-start">
-      <img src="{% static 'image/logo.png' %}" alt="logo" class="h-[35px] w-15 rounded-lg" />
-    </div>
-
-    <h1 class="text-3xl font-bold text-slate-800 text-center">
-      Expense Tracker
-    </h1>
-
-    <div class="flex gap-2 justify-self-end">
-
-      <a href="{% url 'login_page' %}"
-         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
-        Login
-      </a>
-    </div>
-
-  </nav>
-</header>
 
 
 <!-- ====================== FORM SECTION ====================== -->
@@ -61,6 +40,9 @@
         class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition">
         Register
       </button>
+      <a href="{% url 'main_home' %}">
+        Back to home
+      </a>
 
     </form>
   </div>
@@ -68,10 +50,7 @@
 </main>
 
 <!-- ====================== FOOTER ====================== -->
-<footer class="bg-blue-50 py-4 border-t text-center text-sm text-gray-500">
-  © 2025 AKA / Expense Tracker — All Rights Reserved. <br>
-  Developed by Arun, Krishnendhu and Alan
-</footer>
+{% include 'footer.html' %}
 
 </body>
 </html>

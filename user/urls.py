@@ -5,19 +5,19 @@ from . import views
 urlpatterns = [
     #render
      path('user/login', views.login_page, name='login_page'),
-     path('user/register',views.Register_page, name='Register_page'),
+     path('user/register/',views.Register_page, name='Register_page'),
      path('user/expense',views.Expense_page, name='Expense_page'),
      path('user/dashboard1',views.Dashboard1_page, name='Dashboard1_page'),
      path('user/dashboard2',views.Dashboard2_page, name='Dashboard2_page'),
      path('user/reset',views.Reset_page, name='Reset_page'),
      path('user/familyexpense',views.Familyexpense_page, name='user_familyexpense_page'),
      path('user/category',views.Category_page, name='Category_page'),
-     path('user/Family',views.Familyreg_page, name='Familyreg_page'),
      path('user/UserHome_page',views.UserHome_page, name='UserHome_page'),
      path('user/FamHome_page',views.FamHome_page, name='FamHome_page'),
      path('user/reminder/add/',views.Reminder1_page, name='Reminder1_page'),
      path('user/reminder/family/add/',views.Reminder2_page, name='Reminder2_page'),
      path('',views.main_home, name='main_home'),
+     path("user/family_reg_page",views.Familyreg_page,name="Familyreg_page"),
 
     #List urls
      path('user/Transaction1',views.Transaction1_page, name='Transaction1_page'),
@@ -54,7 +54,9 @@ urlpatterns = [
 
 
    #action
-     path('user/user_reg1_action',views.user_reg1_page, name='user_reg1_page'),
+     path('user/user_reg1_action/',views.user_reg1_page, name='user_reg1_page'),
+     path('user/add_familymember/',views.user_reg2_page, name='add_family_member'),
+
      path('user/user_reset_action',views.user_reset_page, name='user_reset_page'),
      path('user/user_login_action',views.user_login_page, name='user_login_page'),
      path('user/user_category_action',views.user_category_page, name='user_category_page'),

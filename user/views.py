@@ -5,8 +5,7 @@ from .forms import LoginForm, RegistrationForm,TransactionForm,DashboardForm,Res
 # from .util import get_phonepe_client,meta_info_generation,buil_request
 from django.urls import reverse
 from uuid import uuid4
-# from .util import send_email
-from django.core.mail import send_mail
+
 import random
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
@@ -18,8 +17,10 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib import messages
 from datetime import datetime, timedelta
-print("DATETIME IMPORT CHECK:", datetime)
 from django.conf import settings
+from django.db import IntegrityError
+from django.core.mail import send_mail
+from .util import send_email
 
 
 #BASIC Page Renders
@@ -95,7 +96,8 @@ def user_login_page(request):
         password = request.POST.get("password")
         user = Registration.objects.filter(username=username, password=password).first()
         if not user:
-            return HttpResponse("Login failed. Invalid username or password")
+            messages.error(request,"invalid user name or password")
+            return redirect('login_page')
         request.session["username"] = user.username
         request.session["user_id"] = user.id
         if user.role == "user":
@@ -116,9 +118,12 @@ def user_reg1_page(request):
         location = request.POST.get("location")
 
         if password != confirm_password:
-            return HttpResponse("Passwords do not match")
+            messages.error(request,"passwords doent match")
+            return redirect("Register_page")
 
-        Registration.objects.create(
+        try:
+
+            Registration.objects.create(
             username=username,
             password=password,
             confirm_password=confirm_password,
@@ -127,6 +132,13 @@ def user_reg1_page(request):
             location=location,
             role="user"   # user
         )
+            subject = "Registration confirmation"
+            body="Thank you for registering with us"
+            send_email(email_id,subject,body)
+        except IntegrityError as e:
+            messages.error(request,f"username already exists")
+            return redirect("Register_page")
+
 
         return redirect("user_login_page")
 
@@ -135,8 +147,9 @@ def user_reg1_page(request):
 #family member Registration Action Pages
 
 def user_reg2_page(request):
-
+    form = RegistrationForm()
     if request.method == "POST":
+        form = RegistrationForm()
         username = request.POST.get("username")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
@@ -144,26 +157,45 @@ def user_reg2_page(request):
         phn_no = request.POST.get("phn_no")
         location = request.POST.get("location")
 
+        
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
-        else:
-            try:
-                Registration.objects.create(
-                    username=username,
-                    password=password,
-                    confirm_password=confirm_password,
-                    email_id=email_id,
-                    phn_no=phn_no,
-                    location=location,
-                    role="family"
-                )
-                messages.success(request, "Family member registered successfully.")
-            except:
-                messages.error(request, "Error in registering family member.")
+            return redirect("Familyreg_page")
 
-    return render(request, "famhome.html")
+        
+        if Registration.objects.filter(email_id=email_id).exists():
+            messages.error(request, "Email already registered.")
+            return redirect("Familyreg_page")
 
-#transaction, category, member, user list pages
+        if Registration.objects.filter(phn_no=phn_no).exists():
+            messages.error(request, "Phone number already registered.")
+            return redirect("Familyreg_page")
+
+        try:
+            Registration.objects.create(
+                username=username,
+                password=password,
+                email_id=email_id,
+                phn_no=phn_no,
+                location=location,
+                role="family"
+            )
+
+            messages.success(request, "Family member registered successfully.")
+            return redirect("Memberlist_page")  
+
+        except IntegrityError:
+            messages.error(request, "User already exists.")
+            return redirect("Familyreg_page")
+
+        except Exception as e:
+            messages.error(request, "Unexpected error occurred.")
+            print("Registration error:", e) 
+            return redirect("Familyreg_page")
+
+    # GET request
+    return redirect("Familyreg_page")
+
 
 def Transaction1_page(request):
     transactions = Transaction.objects.filter(owner_type='user')
@@ -496,7 +528,11 @@ def user_email_page(request):
 def reports_page(request):
 
     transactions = Transaction.objects.all()
-
+    user_id  =  request.session.get('user_id')
+    user = get_object_or_404(
+        Registration,id=user_id
+    )
+    role =  user.role
     range_type = request.GET.get("range")
     start = request.GET.get("start")
     end = request.GET.get("end")
@@ -561,6 +597,7 @@ def reports_page(request):
     # ------------------ RENDER ------------------
 
     return render(request, "reports.html", {
+        'role':role,
         "income": income_total,
         "expense": expense_total,
         "balance": balance,

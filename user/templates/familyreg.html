@@ -11,56 +11,13 @@
 
 <body class="min-h-screen bg-gray-100 flex flex-col">
 
-<!-- ================= HEADER ================= -->
-<header class="bg-blue-50 shadow-sm">
-  <nav class="max-w-7xl mx-auto px-8 py-4 grid grid-cols-3 items-center">
-
-    <div class="flex items-center gap-3">
-      <img src="{% static 'image/logo.png' %}" alt="logo" class="h-[35px] rounded-lg" />
-    </div>
-
-    <h1 class="text-3xl font-bold text-slate-800 text-center">
-      Expense Tracker
-    </h1>
-    <div class="flex gap-2 justify-self-end">
-      <a href="{% url 'UserHome_page' %}"
-         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
-        User Home
-      </a>
-
-      <div class="flex gap-2 justify-self-end">
-      <a href="{% url 'FamHome_page' %}"
-         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
-        Fam Home
-      </a>
-
-    <div class="flex gap-2 justify-end">
-      <a href="{% url 'login_page' %}"
-         class="px-4 py-2 text-sm font-semibold border border-slate-800 text-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition">
-        Login
-      </a>
-    </div>
-
-  </nav>
-</header>
+{% include 'user_header.html' %}
 
 <!-- ================= PAGE BODY ================= -->
 <div class="flex flex-1">
 
   <!-- ===== Sidebar ===== -->
-  <aside class="w-64 bg-white shadow-md p-6">
-    <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-    <ul class="space-y-3 text-gray-700">
-      <li><a href="{% url 'Familyreg_page' %}" class="hover:text-indigo-600">Register Family</a></li>
-      <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">Expense</a></li>
-      <li><a href="{% url 'reports_page' %}" class="hover:text-indigo-600">Report</a></li>
-      <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
-      <li><a href="{% url 'Reminder2_page' %}" class="hover:text-indigo-600">Reminders</a></li>
-      <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600">Family Member List</a></li>
-      <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">Transaction List</a></li>
-      <li><a href="{% url 'Categorylist_page' %}" class="hover:text-indigo-600">Category List</a></li>
-    </ul>
-  </aside>
+ {% include 'sidebar.html' %}
 
   <!-- ===== Main Content ===== -->
   <main class="flex-1 p-10 flex justify-center items-start">
@@ -78,7 +35,7 @@
         {% endfor %}
       {% endif %}
 
-      <form method="post" action="{% url 'Familyreg_page' %}" class="space-y-4">
+      <form method="post" action="{% url 'add_family_member' %}" class="space-y-4">
         {% csrf_token %}
 
         {{ forms.username|add_class:"w-full p-2 border rounded" }}
@@ -88,7 +45,7 @@
         {{ forms.phn_no|add_class:"w-full p-2 border rounded" }}
         {{ forms.location|add_class:"w-full p-2 border rounded" }}
 
-        <button class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
           Register
         </button>
       </form>
@@ -99,11 +56,9 @@
 
 </div>
 
-<!-- ================= FOOTER ================= -->
-<footer class="bg-blue-50 py-4 border-t text-center text-sm text-gray-500">
-  © 2025 AKA / Expense Tracker — All Rights Reserved. <br>
-  Developed by Arun, Krishnendhu and Alan
-</footer>
+
 
 </body>
 </html>
+
+{% include 'footer.html' %}
