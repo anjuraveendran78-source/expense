@@ -100,7 +100,9 @@ def Reminder2_page(request):
         'role':role})
 
 def reminder_list1(request):
-    reminders = Reminder.objects.filter(owner_type='user')
+    user = request.session.get("user_id")
+    logged_user = get_object_or_404(Registration,id=user)
+    reminders = Reminder.objects.filter(by=logged_user)
     role = request.session.get('role')
     return render(request, 'reminder_list1.html', {
         'reminders': reminders,
@@ -226,7 +228,9 @@ def user_reg2_page(request):
 
 
 def Transaction1_page(request):
-    transactions = Transaction.objects.filter(owner_type='user')
+    logged_user = request.session.get("user_id")
+    user = get_object_or_404(Registration,id=logged_user)
+    transactions = Transaction.objects.filter(by=user)
     role =  request.session.get("role")
     return render(request, 'transaction_list1.html', {
         'transactions': transactions,
@@ -445,10 +449,12 @@ def user_category_page(request):
 
 def user_expense_page(request):
     if request.method == "POST":
+        logged_user = request.session.get('user_id')
+        user = get_object_or_404(Registration,id=logged_user)
         form = TransactionForm(request.POST)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.owner_type = 'user'
+            obj.by = user
             obj.save()
             return redirect('Transaction1_page')
     role =  request.session.get("role")
@@ -460,9 +466,11 @@ def user_expense_page(request):
 def user_familyexpense_page(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
+        logged_user = request.session.get('user_id')
+        user = get_object_or_404(Registration,id=logged_user)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.owner_type = 'family'
+            obj.by = user
             obj.save()
             return redirect('Transaction2_page')
     role =  request.session.get("role")

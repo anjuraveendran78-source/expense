@@ -1,71 +1,127 @@
 {% load static %}
 {% load widget_tweaks %}
 {% if role == 'user' %}
-    {%include 'user_header.html' %}
-    {% else %}
-    {% include 'fam_header.html' %}
-    {% endif %}
+{%include 'user_header.html' %}
+{% else %}
+{% include 'fam_header.html' %}
+{% endif %}
 <!-- ================= PAGE BODY ================= -->
 <div class="flex flex-1">
 
- {% if role == 'user' %}
-    {%include 'sidebar.html' %}
-    {% else %}
-    {% include 'fm_side_bar.html' %}
-    {% endif %}  <!-- ===== Main Content ===== -->
+  {% if role == 'user' %}
+  {%include 'sidebar.html' %}
+  {% else %}
+  {% include 'fm_side_bar.html' %}
+  {% endif %} <!-- ===== Main Content ===== -->
   <main class="flex-1 p-10 flex justify-center items-start">
 
-    <div class="bg-white w-full max-w-2xl p-8 rounded-xl shadow-md">
+    <div class="bg-white w-full max-w-2xl p-8 ">
 
       <h2 class="text-2xl font-bold mb-6 text-center">Add Transaction</h2>
 
-      <form method="post" action="{% url 'user_expense_page' %}" class="space-y-6">
+      <form method="post" action="{% url 'user_expense_page' %}"
+        class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg space-y-8">
+        {% if forms.amount.errors %}
+        <p class="text-sm text-red-500 mt-1">{{ forms.amount.errors.0 }}</p>
+        {% endif %}
+
+
         {% csrf_token %}
+
+       
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+          <!-- Transaction ID (optional / read-only if needed) -->
           <div>
-            {{ forms.id.label_tag }}
-            {{ forms.id|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.id.label }}
+            </label>
+            {{ forms.id|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
           </div>
 
+          <!-- Date -->
           <div>
-            {{ forms.date.label_tag }}
-            {{ forms.date|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.date.label }}
+            </label>
+            {{ forms.date|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
           </div>
 
+          <!-- Amount -->
           <div>
-            {{ forms.amount.label_tag }}
-            {{ forms.amount|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.amount.label }}
+            </label>
+            {{ forms.amount|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
           </div>
 
+          <!-- Category -->
           <div>
-            {{ forms.category_id.label_tag }}
-            {{ forms.category_id|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.category_id.label }}
+            </label>
+            {{ forms.category_id|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
           </div>
 
+          <!-- Description -->
           <div class="md:col-span-2">
-            {{ forms.Transaction_desc.label_tag }}
-            {{ forms.Transaction_desc|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.Transaction_desc.label }}
+            </label>
+            {{ forms.Transaction_desc|add_class:"w-full border border-gray-300 px-4 py-3 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
           </div>
 
+          <!-- Type -->
           <div class="md:col-span-2">
-            {{ forms.Type.label_tag }}
-            {{ forms.Type|add_class:"w-full border px-4 py-2 rounded" }}
+            <label class="block text-sm font-medium text-gray-600 mb-1">
+              {{ forms.Type.label }}
+            </label>
+            {{ forms.Type|add_class:"w-full border px-4 py-2 rounded-lg bg-white focus:ring-2 focus:outline-none transition" }}
           </div>
 
         </div>
 
-        <div class="flex justify-center mt-6">
-          <button type="submit" class="bg-blue-600 text-white px-8 py-2 rounded-lg hover:bg-blue-700">
+        <!-- Submit -->
+        <div class="flex justify-center pt-4">
+          <button type="submit" class="px-10 py-3 rounded-xl bg-indigo-600 text-white font-semibold
+             hover:bg-indigo-700 transition shadow-md">
             Save Transaction
           </button>
         </div>
 
       </form>
 
+
     </div>
 
   </main>
 
 </div>
+
+<script>
+  const typeField = document.querySelector('[name="Type"]');
+
+  function updateTypeColor() {
+    typeField.classList.remove(
+      'border-green-400', 'bg-green-50', 'text-green-700',
+      'border-red-400', 'bg-red-50', 'text-red-700',
+      'focus:ring-green-400', 'focus:ring-red-400'
+    );
+
+    if (typeField.value === 'Income') {
+      typeField.classList.add(
+        'border-green-400', 'bg-green-50', 'text-green-700',
+        'focus:ring-green-400'
+      );
+    } else if (typeField.value === 'Expense') {
+      typeField.classList.add(
+        'border-red-400', 'bg-red-50', 'text-red-700',
+        'focus:ring-red-400'
+      );
+    }
+  }
+
+  typeField.addEventListener('change', updateTypeColor);
+  updateTypeColor(); // run on page load
+</script>
