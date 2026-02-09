@@ -18,7 +18,6 @@ class Registration(models.Model):
     otp = models.CharField(max_length=6, blank=True, null=True)
 
 class Notification(models.Model):
-    id = models.IntegerField(max_length=20,primary_key=True)
     time = models.CharField(max_length=50)
     date = models.DateField() 
     send_by = models.EmailField(max_length=50)
@@ -33,14 +32,17 @@ class Category(models.Model):
     
     
 class Transaction(models.Model):
-    id = models.AutoField(primary_key=True)
     date = models.DateField()
     category_id = models.ForeignKey('Category', on_delete=models.CASCADE)
     amount = models.FloatField()
     Transaction_desc = models.CharField(max_length=100)
     Type = models.CharField(max_length=100)
 
-    owner_type = models.CharField(max_length=10)  
+    by = models.ForeignKey(
+        Registration,
+        related_name="transaction",
+        on_delete=models.PROTECT
+    )  
     # values: 'user' or 'family'
     
 
@@ -54,9 +56,10 @@ class Reminder(models.Model):
     Reminder_desc = models.CharField(max_length=100)
     Email_id = models.EmailField(max_length=100)
 
-    owner_type = models.CharField(
-        max_length=10,
-        choices=[('user', 'User'), ('family', 'Family')]
+    by = models.ForeignKey(
+        Registration,
+        related_name="reminder",
+        on_delete=models.PROTECT,
     )
 
 

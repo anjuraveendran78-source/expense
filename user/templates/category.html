@@ -1,12 +1,20 @@
 {% load static %}
 {% load widget_tweaks %}
 {% load i18n %}
-{% include 'user_header.html' %}
+{% if role == 'user' %}
+    {%include 'user_header.html' %}
+    {% else %}
+    {% include 'fam_header.html' %}
+    {% endif %}
 
 
 
 <div class="flex flex-row">
-    <div>{% include 'sidebar.html' %}</div>
+    <div> {% if role == 'user' %}
+    {%include 'sidebar.html' %}
+    {% else %}
+    {% include 'fm_side_bar.html' %}
+    {% endif %}</div>
     <div class="m-20">
         
 <div class="bg-gray-100  flex flex-col">

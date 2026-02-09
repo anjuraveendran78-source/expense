@@ -1,22 +1,55 @@
-<!DOCTYPE html>
+{% if role == 'user' %}
+{% include 'user_header.html' %}
+{% else %}
+{% include 'fam_header.html' %}
+{% endif %}
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Edit</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h2> Edit Category</h2>
-        <form method="POST"> 
-            {% csrf_token %}
-            {{ forms.as_p }}    
-            <button type="submit">Edit</button>  
-        </form>
-        <br>
-        <a href="{% url 'Categorylist_page' %}">Back to Category list</a>
-    </body>
-</html>
+
+<div class="flex flex-row">
+    <div>
+        {% if role == 'user' %}
+{% include 'sidebar.html' %}
+{% else %}
+{% include 'fm_side_bar.html' %}
+{% endif %}
+    </div>
+    <div>
+        <div class="ml-0 md:ml-64 pt-24 px-6">
+            <div class="max-w-lg mx-auto">
+
+                <!-- Card -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                        Edit Category
+                    </h2>
+
+                    <form method="POST" class="space-y-5">
+                        {% csrf_token %}
+
+                        <!-- Django form fields -->
+                        <div class="space-y-4">
+                            {{ forms.as_p }}
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex items-center justify-between pt-4">
+                            <a href="{% url 'Categorylist_page' %}"
+                                class="text-sm text-gray-500 hover:text-indigo-600 transition">
+                                ← Back to Category list
+                            </a>
+
+                            <button type="submit" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium
+                   hover:bg-indigo-700 transition shadow">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Wrapper -->

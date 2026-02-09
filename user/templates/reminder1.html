@@ -12,11 +12,19 @@
 <body class="bg-gray-100 min-h-screen">
 
 <!-- ====================== HEADER ====================== -->
-{% include 'user_header.html' %}
+{% if role == 'user' %}
+    {%include 'user_header.html' %}
+    {% else %}
+    {% include 'fam_header.html' %}
+    {% endif %}
 
 <div class="flex">
 
-{% include 'sidebar.html' %}
+ {% if role == 'user' %}
+    {%include 'sidebar.html' %}
+    {% else %}
+    {% include 'fm_side_bar.html' %}
+    {% endif %}
 
 <!-- ====================== MAIN FORM ====================== -->
 <main class="flex-1 p-10">

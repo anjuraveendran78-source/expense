@@ -30,21 +30,28 @@ def main_home(request):
 
 def login_page(request):
     register=LoginForm
-    return render(request, 'login.html', {'forms':register})
+    return render(request, 'login.html', {
+        'forms':register,})
 
 def Register_page(request):
     Register=RegistrationForm()
     return render(request, 'registration.html',{'forms':Register})
 
 def UserHome_page(request):
-    return render(request, 'userhome.html')
+    role = request.session.get('role')
+    return render(request, 'userhome.html',
+                  {'role':role}
+                  )
 
 def FamHome_page(request):
     return render(request, 'famhome.html')
 
 def Expense_page(request):
+    role = request.session.get('role')
     Expense=TransactionForm()
-    return render(request, 'expense.html', {'forms':Expense})
+    return render(request, 'expense.html', {
+        'forms':Expense,
+        'role':role})
 
 def Dashboard1_page(request):
     Dashboard1=DashboardForm()
@@ -64,28 +71,47 @@ def Familyexpense_page(request):
 
 def Category_page(request):
     category= CategoryForm()
-    return render(request, 'category.html', {'forms':category})
+    role = request.session.get('role')
+    return render(request, 'category.html', {
+        'forms':category,
+        'role':role
+        })
 
 
 def Familyreg_page(request):
     familyregister=RegistrationForm()
-    return render(request, 'familyreg.html',{'forms':familyregister})
+    role = request.session.get('role')
+    return render(request, 'familyreg.html',{
+        'forms':familyregister,
+        'role':role})
 
 def Reminder1_page(request):
     reminder1 = ReminderForm()
-    return render(request, 'reminder1.html', {'forms':reminder1})
+    role = request.session.get('role')
+    return render(request, 'reminder1.html', {
+        'forms':reminder1,
+        'role':role,})
 
 def Reminder2_page(request):
     reminder2 = ReminderForm()
-    return render(request, 'reminder2.html', {'forms':reminder2})
+    role = request.session.get('role')
+    return render(request, 'reminder2.html', {
+        'forms':reminder2,
+        'role':role})
 
 def reminder_list1(request):
     reminders = Reminder.objects.filter(owner_type='user')
-    return render(request, 'reminder_list1.html', {'reminders': reminders})
+    role = request.session.get('role')
+    return render(request, 'reminder_list1.html', {
+        'reminders': reminders,
+        'role':role})
 
 def reminder_list2(request):
     reminders = Reminder.objects.filter(owner_type='family')
-    return render(request, 'reminder_list2.html', {'reminders': reminders})
+    role = request.session.get('role')
+    return render(request, 'reminder_list2.html', {
+        'reminders': reminders,
+        'role':role})
 
 
 # Login Action Page
@@ -100,10 +126,12 @@ def user_login_page(request):
             return redirect('login_page')
         request.session["username"] = user.username
         request.session["user_id"] = user.id
+        request.session["role"] = user.role
         if user.role == "user":
             return redirect("UserHome_page")
         else:
             return redirect("FamHome_page")
+    
     return render(request, "login.html")
 
 #User Registration Action Pages
@@ -199,23 +227,38 @@ def user_reg2_page(request):
 
 def Transaction1_page(request):
     transactions = Transaction.objects.filter(owner_type='user')
-    return render(request, 'transaction_list1.html', {'transactions': transactions})
+    role =  request.session.get("role")
+    return render(request, 'transaction_list1.html', {
+        'transactions': transactions,
+        'role':role})
 
 def Transaction2_page(request):
     transactions = Transaction.objects.filter(owner_type='family')
-    return render(request, 'transaction_list2.html', {'transactions': transactions})
+    role =  request.session.get("role")
+    return render(request, 'transaction_list2.html', {
+        'transactions': transactions,
+        'role':role})
 
 def Categorylist_page(request):
     categories = Category.objects.all()
-    return render(request, 'category_list.html', {'categories': categories})
+    role =  request.session.get("role")
+    return render(request, 'category_list.html', {
+        'categories': categories,
+       'role':role})
 
 def Memberlist_page(request):
     members = Registration.objects.filter(role='family')
-    return render(request, 'fam_member.html', {'members': members})
+    role =  request.session.get("role")
+    return render(request, 'fam_member.html', {
+        'members': members,
+        'role':role})
 
 def userlist_page(request):
     users = Registration.objects.filter(role='user')
-    return render(request, 'user_list.html', {'forms': users})
+    role =  request.session.get("role")
+    return render(request, 'user_list.html', {
+        'forms': users,
+        'role':role})
 
 # Edit and Delete functions
 
@@ -235,8 +278,10 @@ def trans1_edit(request, id):
             return redirect('Transaction1_page')
     else:
         form = TransactionForm(instance=transaction)
-
-    return render(request, 'trans1_edit.html', {'forms': form})
+    role =  request.session.get("role")
+    return render(request, 'trans1_edit.html', {
+        'forms': form,
+        'role':role})
 
 def trans2_edit(request, id):
     transaction = Transaction.objects.get(id=id)
@@ -250,8 +295,12 @@ def trans2_edit(request, id):
             return redirect('Transaction2_page')
     else:
         form = TransactionForm(instance=transaction)
+    role =  request.session.get("role")
 
-    return render(request, 'trans2_edit.html', {'forms': form})
+    return render(request, 'trans2_edit.html', {
+        'forms': form,
+        'role':role
+      })
 
 def trans2_delete(request, id):
     Transaction.objects.filter(id=id).delete()
@@ -274,7 +323,12 @@ def member_edit(request, id):
             return redirect('Memberlist_page')
     else:
         form = RegistrationForm(instance=member)
-    return render(request, "member_edit.html", {'forms': form, 'member': member})
+        role =  request.session.get("role")
+    return render(request, "member_edit.html", {
+        'forms': form,
+        'member': member,
+        'role':role
+        })
 
 #3.User 
 def user_delete(request, id):
@@ -293,7 +347,11 @@ def user_edit_page(request, id):
             return redirect('userlist_page')
     else:
         form = RegistrationForm(instance=user)
-    return render(request, "user_edit.html", {'forms': form, 'user': user})
+    role =  request.session.get("role")
+    return render(request, "user_edit.html", {
+        'forms': form,
+          'user': user,
+          'role':role})
 
 #4.Category
 
@@ -303,7 +361,7 @@ def category_delete(request, id):
     return redirect('Categorylist_page')
 
 def category_edit_page(request, id):
-    cate = get_object_or_404(Category, category_id=id)
+    cate = get_object_or_404(Category, id=id)
     if request.method == "POST":
         form = CategoryForm(request.POST, instance=cate)
         if form.is_valid():
@@ -311,7 +369,11 @@ def category_edit_page(request, id):
             return redirect('Categorylist_page')
     else:
         form = CategoryForm(instance=cate)
-    return render(request, "category_edit.html", {'forms': form, 'cate':cate})
+    role =  request.session.get("role")
+    return render(request, "category_edit.html", {
+        'forms': form, 
+        'cate':cate,
+        'role':role})
 
 #5.Reminder of User
 
@@ -334,7 +396,12 @@ def remind1_edit_page(request, id):
             return redirect('reminder_list1')
     else:
         form = ReminderForm(instance=remind)
-    return render(request, "remind1_edit.html", {'forms': form, 'remind':remind})
+    role =  request.session.get("role")
+    return render(request, "remind1_edit.html", {
+        'forms': form,
+        'remind':remind,
+        'role':role
+        })
 
 def remind2_edit_page(request, id):
     remind = get_object_or_404(Reminder, id=id)
@@ -345,7 +412,12 @@ def remind2_edit_page(request, id):
             return redirect('reminder_list2')
     else:
         form = ReminderForm(instance=remind)
-    return render(request, "remind2_edit.html", {'forms': form, 'remind':remind})
+    role =  request.session.get("role")
+    return render(request, "remind2_edit.html", {
+        'forms': form,
+        'remind':remind,
+        'role':role
+        })
 
 def user_reset_page(request):
     if request.method == "POST":
@@ -365,7 +437,11 @@ def user_category_page(request):
             print(form.errors)  
             return HttpResponse(f"Form errors: {form.errors}")
     form = CategoryForm()
-    return render(request, 'category.html', {'forms': form})
+    role =  request.session.get("role")
+    return render(request, 'category.html', {
+        'forms': form,
+        'role':role,
+        })
 
 def user_expense_page(request):
     if request.method == "POST":
@@ -375,8 +451,11 @@ def user_expense_page(request):
             obj.owner_type = 'user'
             obj.save()
             return redirect('Transaction1_page')
-
-    return render(request, 'expense.html', {'forms': TransactionForm()})
+    role =  request.session.get("role")
+    return render(request, 'expense.html', {
+        'forms': TransactionForm(),
+        'role':role
+        })
 
 def user_familyexpense_page(request):
     if request.method == "POST":
@@ -386,8 +465,11 @@ def user_familyexpense_page(request):
             obj.owner_type = 'family'
             obj.save()
             return redirect('Transaction2_page')
-
-    return render(request, 'familyexpense.html', {'forms': TransactionForm()})
+    role =  request.session.get("role")
+    return render(request, 'familyexpense.html', {
+        'forms': TransactionForm(),
+        'role':role
+        })
 
 
 def user_reminder1_page(request):
@@ -526,8 +608,12 @@ def user_email_page(request):
 
 
 def reports_page(request):
-
-    transactions = Transaction.objects.all()
+    role = request.session.get("role")
+    if role == "user":
+        transactions = Transaction.objects.all()
+    else:
+        transactions = Transaction.objects.all()
+    
     user_id  =  request.session.get('user_id')
     user = get_object_or_404(
         Registration,id=user_id
@@ -602,6 +688,7 @@ def reports_page(request):
         "expense": expense_total,
         "balance": balance,
         "transactions": transactions,
+        
 
         "months_json": json.dumps(months),
         "income_json": json.dumps(income_data),
@@ -656,7 +743,8 @@ def forgot_password(request):
             return redirect('verify_otp')
         else:
             messages.error(request, "Email not registered.")
-    return render(request, 'forgot_password.html')
+    role =  request.session.get("role")
+    return render(request, 'forgot_password.html',{'role':role})
 
 
 def verify_otp(request):
@@ -669,8 +757,8 @@ def verify_otp(request):
             return redirect('reset_password')
         else:
             messages.error(request, "Invalid OTP")
-
-    return render(request, 'verify_otp.html')
+    role =  request.session.get("role")
+    return render(request, 'verify_otp.html',{'role':role})
 
 def reset_password(request):
     user_id = request.session.get('reset_user')
@@ -689,7 +777,7 @@ def reset_password(request):
             user.save()
             messages.success(request, "Password reset successful")
             return redirect('login_page')
-
-    return render(request, 'reset_password.html')
+    role =  request.session.get("role")
+    return render(request, 'reset_password.html',{'role':role})
 
 #end of view functions

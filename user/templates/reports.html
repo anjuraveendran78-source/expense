@@ -100,43 +100,61 @@
 {% include 'footer.html' %}
 
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script>
-  window.onload = function () {
+window.onload = function () {
 
-    /* =================== CHART DATA =================== */
-
-    const months = {{ months_json| safe
-  }};
-  const incomeData = {{ income_json| safe }};
-  const expenseData = {{ expense_json| safe }};
-  const categoryLabels = {{ category_labels_json| safe }};
-  const categoryValues = {{ category_values_json| safe }};
+  /* =================== CHART DATA =================== */
+  const months = {{ months_json|safe }};
+  const incomeData = {{ income_json|safe }};
+  const expenseData = {{ expense_json|safe }};
+  const categoryLabels = {{ category_labels_json|safe }};
+  const categoryValues = {{ category_values_json|safe }};
 
   document.getElementById('monthsCount').innerText = months.length;
 
+  /* =================== MONTHLY LINE CHART =================== */
   const ctxM = document.getElementById('monthlyChart').getContext('2d');
   new Chart(ctxM, {
     type: 'line',
     data: {
       labels: months,
       datasets: [
-        { label: 'Income', data: incomeData, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.15)', tension: 0.3, fill: true },
-        { label: 'Expense', data: expenseData, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.15)', tension: 0.3, fill: true }
+        {
+          label: 'Income',
+          data: incomeData,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.15)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Expense',
+          data: expenseData,
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.15)',
+          tension: 0.3,
+          fill: true
+        }
       ]
     }
   });
 
+  /* =================== CATEGORY PIE CHART =================== */
   const ctxC = document.getElementById('categoryChart').getContext('2d');
   new Chart(ctxC, {
     type: 'pie',
     data: {
       labels: categoryLabels,
-      datasets: [{ data: categoryValues }]
+      datasets: [{
+        data: categoryValues
+      }]
     }
   });
 
-  /* =================== FILTER UI LOGIC =================== */
-
+  /* =================== FILTER UI =================== */
   const rangeSelect = document.getElementById("rangeSelect");
   const startDate = document.getElementById("startDate");
   const endDate = document.getElementById("endDate");
@@ -152,6 +170,6 @@
   }
 
   rangeSelect.addEventListener("change", toggleDates);
-  toggleDates(); // run once on page load
-}
+  toggleDates();
+};
 </script>

@@ -1,11 +1,18 @@
 {% load static %}
 {% load widget_tweaks %}
-{% include 'user_header.html' %}
+{% if role == 'user' %}
+    {%include 'user_header.html' %}
+    {% else %}
+    {% include 'fam_header.html' %}
+    {% endif %}
 <!-- ================= PAGE BODY ================= -->
 <div class="flex flex-1">
 
-  {% include 'sidebar.html' %}
-  <!-- ===== Main Content ===== -->
+ {% if role == 'user' %}
+    {%include 'sidebar.html' %}
+    {% else %}
+    {% include 'fm_side_bar.html' %}
+    {% endif %}  <!-- ===== Main Content ===== -->
   <main class="flex-1 p-10 flex justify-center items-start">
 
     <div class="bg-white w-full max-w-2xl p-8 rounded-xl shadow-md">
