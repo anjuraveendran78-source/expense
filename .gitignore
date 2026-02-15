@@ -28,7 +28,6 @@ ENV/
 # Django
 # ==========================
 *.log
-db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
@@ -65,6 +64,12 @@ local_settings.py
 .env
 .env.*
 !.env.example
+
+# ==========================
+# Data Dumps (Sensitive)
+# ==========================
+data.json
+*.json.bak
 
 # ==========================
 # Misc

@@ -161,141 +161,152 @@
 <script>
   window.onload = function () {
     /* =================== CHART DATA =================== */
-    const months = {{ months_json| safe
-  }};
-  const incomeData = {{ income_json| safe }};
-  const expenseData = {{ expense_json| safe }};
-  const categoryLabels = {{ category_labels_json| safe }};
-  const categoryValues = {{ category_values_json| safe }};
+    const months = JSON.parse("{{ months_json|escapejs }}");
+    const incomeData = JSON.parse("{{ income_json|escapejs }}");
+    const expenseData = JSON.parse("{{ expense_json|escapejs }}");
+    const categoryLabels = JSON.parse("{{ category_labels_json|escapejs }}");
+    const categoryValues = JSON.parse("{{ category_values_json|escapejs }}");
 
-  document.getElementById('monthsCount').innerText = months.length;
+    document.getElementById('monthsCount').innerText = months.length;
 
-  // Theme checking helper
-  const checkDark = () => document.documentElement.classList.contains('dark');
-  const getGridColor = () => checkDark() ? '#334155' : '#e2e8f0';
-  const getTextColor = () => checkDark() ? '#cbd5e1' : '#64748b';
+    // Theme checking helper
+    const checkDark = () => document.documentElement.classList.contains('dark');
+    const getGridColor = () => checkDark() ? '#334155' : '#e2e8f0';
+    const getTextColor = () => checkDark() ? '#cbd5e1' : '#64748b';
 
-  /* =================== MONTHLY LINE CHART =================== */
-  const ctxM = document.getElementById('monthlyChart').getContext('2d');
-  const monthlyChart = new Chart(ctxM, {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        {
-          label: 'Income',
-          data: incomeData,
-          borderColor: '#10b981', // emerald-500
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          tension: 0.4,
-          fill: true,
-          borderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        },
-        {
-          label: 'Expense',
-          data: expenseData,
-          borderColor: '#ef4444', // red-500
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          tension: 0.4,
-          fill: true,
-          borderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: { color: getTextColor() }
-        },
-        tooltip: {
-          backgroundColor: checkDark() ? '#1e293b' : '#ffffff',
-          titleColor: checkDark() ? '#ffffff' : '#1e293b',
-          bodyColor: checkDark() ? '#cbd5e1' : '#475569',
-          borderColor: getGridColor(),
-          borderWidth: 1
-        }
+    /* =================== MONTHLY LINE CHART =================== */
+    const ctxM = document.getElementById('monthlyChart').getContext('2d');
+    const monthlyChart = new Chart(ctxM, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: 'Income',
+            data: incomeData,
+            borderColor: '#10b981', // emerald-500
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: 'Expense',
+            data: expenseData,
+            borderColor: '#ef4444', // red-500
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4,
+            fill: true,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }
+        ]
       },
-      scales: {
-        x: {
-          grid: { color: getGridColor(), display: false },
-          ticks: { color: getTextColor() }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: getTextColor() }
+          },
+          tooltip: {
+            backgroundColor: checkDark() ? '#1e293b' : '#ffffff',
+            titleColor: checkDark() ? '#ffffff' : '#1e293b',
+            bodyColor: checkDark() ? '#cbd5e1' : '#475569',
+            borderColor: getGridColor(),
+            borderWidth: 1
+          }
         },
-        y: {
-          grid: { color: getGridColor(), borderDash: [5, 5] },
-          ticks: { color: getTextColor() },
-          beginAtZero: true
+        scales: {
+          x: {
+            grid: { color: getGridColor(), display: false },
+            ticks: { color: getTextColor() }
+          },
+          y: {
+            grid: { color: getGridColor(), borderDash: [5, 5] },
+            ticks: { color: getTextColor() },
+            beginAtZero: true
+          }
         }
-      }
-    }
-  });
-
-  /* =================== CATEGORY PIE CHART =================== */
-  const ctxC = document.getElementById('categoryChart').getContext('2d');
-  const categoryChart = new Chart(ctxC, {
-    type: 'doughnut',
-    data: {
-      labels: categoryLabels,
-      datasets: [{
-        data: categoryValues,
-        backgroundColor: [
-          '#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#eab308', '#22c55e', '#06b6d4'
-        ],
-        borderWidth: 0,
-        hoverOffset: 10
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: { color: getTextColor(), padding: 20 }
-        }
-      }
-    }
-  });
-
-  /* =================== FILTER UI =================== */
-  const rangeSelect = document.getElementById("rangeSelect");
-  const dateInputs = document.getElementById("date-inputs");
-
-  function toggleDates() {
-    if (rangeSelect.value === "") {
-      dateInputs.style.display = "flex";
-    } else {
-      dateInputs.style.display = "none";
-    }
-  }
-
-  rangeSelect.addEventListener("change", toggleDates);
-  toggleDates();
-
-  // Theme Change Observer to update charts
-  const observer = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
-      if (mutation.attributeName === "class") {
-        // Update Line Chart
-        monthlyChart.options.scales.x.ticks.color = getTextColor();
-        monthlyChart.options.scales.y.ticks.color = getTextColor();
-        monthlyChart.options.scales.y.grid.color = getGridColor();
-        monthlyChart.options.plugins.legend.labels.color = getTextColor();
-        monthlyChart.update();
-
-        // Update Pie Chart
-        categoryChart.options.plugins.legend.labels.color = getTextColor();
-        categoryChart.update();
       }
     });
-  });
 
-  observer.observe(document.documentElement, { attributes: true });
-};
+    /* =================== CATEGORY PIE CHART =================== */
+    const ctxC = document.getElementById('categoryChart').getContext('2d');
+
+    if (categoryValues.length === 0 || categoryValues.every(val => val === 0)) {
+      // Show "No Data" message if empty
+      const chartContainer = document.getElementById('categoryChart').parentElement;
+      chartContainer.innerHTML = '<div class="flex items-center justify-center h-full text-slate-400 text-sm">No expense data available</div>';
+    } else {
+      const categoryChart = new Chart(ctxC, {
+        type: 'doughnut',
+        data: {
+          labels: categoryLabels,
+          datasets: [{
+            data: categoryValues,
+            backgroundColor: [
+              '#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#eab308', '#22c55e', '#06b6d4'
+            ],
+            borderWidth: 0,
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: { color: getTextColor(), padding: 20 }
+            }
+          }
+        }
+      });
+
+      // Theme Change Observer (only if chart exists)
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.attributeName === "class") {
+            // Update Line Chart
+            if (monthlyChart) {
+              monthlyChart.options.scales.x.ticks.color = getTextColor();
+              monthlyChart.options.scales.y.ticks.color = getTextColor();
+              monthlyChart.options.scales.y.grid.color = getGridColor();
+              monthlyChart.options.plugins.legend.labels.color = getTextColor();
+              monthlyChart.update();
+            }
+
+            // Update Pie Chart
+            if (categoryChart) {
+              categoryChart.options.plugins.legend.labels.color = getTextColor();
+              categoryChart.update();
+            }
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, { attributes: true });
+    }
+
+    /* =================== FILTER UI =================== */
+    const rangeSelect = document.getElementById("rangeSelect");
+    const dateInputs = document.getElementById("date-inputs");
+
+    function toggleDates() {
+      if (rangeSelect.value === "") {
+        dateInputs.style.display = "flex";
+      } else {
+        dateInputs.style.display = "none";
+      }
+    }
+
+    rangeSelect.addEventListener("change", toggleDates);
+    toggleDates();
+
+  };
 </script>
 {% endblock %}
