@@ -1,63 +1,38 @@
-<!DOCTYPE html>
+{% extends 'base_dashboard.html' %}
 {% load static %}
-{% load i18n %}
 
-<html>
-    <head>
-        <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Expense Tracker</title>
+{% block title %}Family Home - Expense Tracker{% endblock %}
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-       
-    </head>
-    <body>
-        <!-- ====================== HEADER ====================== -->
-     {% include 'fam_header.html' %}
-    <!-- ====================== content SECTION ====================== -->
-    <div class="flex">     
-        
-        
-        {% include 'fm_side_bar.html' %}
-        
-    
-         <section class="w-full px-10 py-20 text-center rounded-xl bg-cover bg-center bg-no-repeat"
-             style="background-image: url('{% static 'image/Bg2.png' %}');">
-         <div class="backdrop-brightness-75 py-50  px-30 rounded-xl">
-            <h2 class="text-4xl font-bold text-white mb-4 drop-shadow">
-                Welcome to Expense Tracker
-            </h2>
-            <p class="text-lg text-gray-200 max-w-full drop-shadow">
-                Track your expenses effortlessly and take control of your finances today!
-                blaaa blaa blaa
-            </p>
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl h-[500px]">
+
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{% static 'image/Bg2.png' %}');">
         </div>
-        </section>
-    </div>    
-    
 
-
-
-{% comment %} <p class="text-lg text-gray-200 max-w-2xl mx-auto drop-shadow">
-    {% blocktrans %}
-
-    Track your expenses effortlessly and take control of your finances today!
-    {% endblocktrans %}
-</p> {% endcomment %}
-
-
-                 {%comment%}<section class="max-w-7xl mx-auto px-10 py-40 text-center rounded-xl bg-cover bg-center bg-no-repeat"
-    style="background-image: url('{% static 'image/Bg.png' %}');">{% endcomment %}
-       
-        
-        <!-- ====================== FOOTER ====================== -->
-    <footer class="bg-white mt-16 py-4 border-t">
-       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
-            © 2025 Your College / Project Name — All Rights Reserved.
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-center px-6">
+            <div class="max-w-2xl">
+                <h1 class="text-5xl font-extrabold text-white mb-6 drop-shadow-xl tracking-tight">
+                    Welcome to <span class="text-emerald-400">Family Expense Tracker</span>
+                </h1>
+                <p class="text-lg text-gray-200 mb-8 leading-relaxed drop-shadow-md">
+                    Collaborate with your family to track expenses, manage budgets, and achieve financial goals
+                    together.
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a href="{% url 'Dashboard2_page' %}"
+                        class="px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-all transform hover:-translate-y-1">
+                        Family Dashboard
+                    </a>
+                    <a href="{% url 'Familyexpense_page' %}"
+                        class="px-8 py-3.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-semibold rounded-xl border border-white/30 transition-all transform hover:-translate-y-1">
+                        Add Expense
+                    </a>
+                </div>
+            </div>
         </div>
-    </footer>
-
-    </body>
-</html>
+    </div>
+</div>
+{% endblock %}

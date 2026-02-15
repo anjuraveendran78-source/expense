@@ -485,8 +485,13 @@ def user_reminder1_page(request):
         form = ReminderForm(request.POST)
 
         if form.is_valid():
+            # Get logged in user
+            user_id = request.session.get("user_id")
+            user = get_object_or_404(Registration, id=user_id)
+            
             reminder = form.save(commit=False)
             reminder.owner_type = 'user'
+            reminder.by = user  # Assign the user
             reminder.save()
 
             # ================= SEND EMAIL =================
@@ -523,8 +528,13 @@ def user_reminder2_page(request):
         form = ReminderForm(request.POST)
 
         if form.is_valid():
+            # Get logged in user
+            user_id = request.session.get("user_id")
+            user = get_object_or_404(Registration, id=user_id)
+
             reminder = form.save(commit=False)
             reminder.owner_type = 'family'
+            reminder.by = user # Assign the user
             reminder.save()
 
             subject = "Family Reminder Created"

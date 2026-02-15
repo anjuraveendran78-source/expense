@@ -1,42 +1,87 @@
-{% load widget_tweaks %}
+{% extends 'base_dashboard.html' %}
+{% load static %}
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Edit Transaction</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% block title %}Edit Transaction - Expense Tracker{% endblock %}
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+{% block content %}
+<div class="flex justify-center items-start min-h-[70vh] pt-10 animate-fade-in-up">
 
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl">
+  <div
+    class="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
 
-    <h2 class="text-2xl font-bold mb-6 text-center">
-      Edit Transaction
-    </h2>
+    <!-- Header -->
+    <div
+      class="bg-slate-50 dark:bg-slate-900/50 px-8 py-6 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Edit Transaction</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update transaction details</p>
+      </div>
+      <a href="{% url 'Transaction1_page' %}"
+        class="text-sm text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back
+      </a>
+    </div>
 
-    <form method="post">
+    <form method="post" class="p-8">
       {% csrf_token %}
 
-      <div class="space-y-4">
+      <!-- Toggle Income / Expense (Visual only, logic handled by form field if needed or pre-set) -->
+      <!-- Note: For edit, typically we just show the field or keep it simple. -->
 
-        {{ forms.date|add_class:"w-full border p-2 rounded" }}
-        {{ forms.amount|add_class:"w-full border p-2 rounded" }}
-        {{ forms.category_id|add_class:"w-full border p-2 rounded" }}
-        {{ forms.Transaction_desc|add_class:"w-full border p-2 rounded" }}
-        {{ forms.Type|add_class:"w-full border p-2 rounded" }}
+      <div class="space-y-6">
+        <!-- Hidden Type Field if needed, or render it if editable -->
+        <div class="hidden">
+          {{ forms.Type }}
+        </div>
+
+        <!-- Date & Amount Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Date
+            </label>
+            {{ forms.date }}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Amount
+            </label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">₹</span>
+              {{ forms.amount }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            Category
+          </label>
+          {{ forms.category_id }}
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            Description
+          </label>
+          {{ forms.Transaction_desc }}
+        </div>
 
       </div>
 
-      <div class="mt-6 text-center">
-        <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-          Update Transaction
-        </button>
-      </div>
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 mt-8">
+        Update Transaction
+      </button>
 
     </form>
-
   </div>
-
-</body>
-</html>
+</div>
+{% endblock %}

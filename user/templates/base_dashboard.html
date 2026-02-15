@@ -72,9 +72,9 @@
 
 <body class="bg-gray-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-    <!-- Top Navbar -->
+    <!-- Navbar (Fixed Full Width) -->
     <nav
-        class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700 transition-colors duration-300">
+        class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700 transition-colors duration-300">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start">
@@ -88,7 +88,7 @@
                         </svg>
                     </button>
 
-                    <!-- Logo -->
+                    <!-- Brand/Logo -->
                     <a href="{% url 'UserHome_page' %}" class="text-xl font-bold flex items-center lg:ml-2.5">
                         <span
                             class="self-center whitespace-nowrap text-emerald-600 dark:text-emerald-400">Expense</span>
@@ -96,81 +96,74 @@
                     </a>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <!-- Theme Toggle Button -->
-                    <button id="theme-toggle" type="button"
-                        class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-slate-700 rounded-lg text-sm p-2.5 transition-colors duration-200">
-                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-4 ml-auto">
+                    <!-- Theme Toggle -->
+                    <button
+                        class="theme-toggle-btn p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-700 transition-colors">
+                        <!-- Sun Icon -->
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
                         </svg>
-                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                                fill-rule="evenodd" clip-rule="evenodd"></path>
+                        <!-- Moon Icon -->
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
                         </svg>
                     </button>
 
-                    <!-- User Menu / Logout -->
-                    <div class="hidden md:flex items-center">
-                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300 mr-4">Welcome!</span>
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-3">
+                        <span
+                            class="text-sm font-medium text-slate-700 dark:text-slate-300 hidden sm:block">Welcome!</span>
                         <a href="{% url 'main_home' %}"
-                            class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 transition-colors duration-200">Logout</a>
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors shadow-sm">
+                            Logout
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Layout Wrapper -->
-    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-slate-900 h-screen">
+    <!-- Sidebar (Fixed) -->
+    {% include 'sidebar.html' %}
 
-        <!-- Sidebar Include -->
-        {% include 'sidebar.html' %}
+    <!-- Main Layout Wrapper -->
+    <div class="flex flex-col min-h-screen pt-16 md:ml-64 transition-all duration-300">
 
-        <!-- Main Content -->
-        <div id="main-content"
-            class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-slate-900 transition-all duration-200">
-            <main class="px-4 pt-6 pb-20">
-                {% include 'message.html' %}
-                {% block content %}
-                {% endblock %}
-            </main>
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+            {% include 'message.html' %}
+            {% block content %}{% endblock %}
+        </main>
 
-            {% include 'footer.html' %}
-        </div>
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-slate-700 py-6 mt-auto">
+            <div class="text-center text-sm text-slate-500 dark:text-slate-400">
+                &copy; 2025 Your College / Project Name — All Rights Reserved.
+            </div>
+        </footer>
+
     </div>
 
     <!-- Interactive Scripts -->
     <script>
         // --- Theme Toggle Logic ---
-        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
 
-        // Initial Icon State
+        // Initial Theme Check
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            themeToggleLightIcon.classList.remove('hidden');
+            document.documentElement.classList.add('dark');
         } else {
-            themeToggleDarkIcon.classList.remove('hidden');
+            document.documentElement.classList.remove('dark');
         }
 
-        var themeToggleBtn = document.getElementById('theme-toggle');
-
-        themeToggleBtn.addEventListener('click', function () {
-            // Toggle icons
-            themeToggleDarkIcon.classList.toggle('hidden');
-            themeToggleLightIcon.classList.toggle('hidden');
-
-            // Toggle Class & Storage
-            if (localStorage.getItem('theme')) {
-                if (localStorage.getItem('theme') === 'light') {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-            } else {
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
                 if (document.documentElement.classList.contains('dark')) {
                     document.documentElement.classList.remove('dark');
                     localStorage.setItem('theme', 'light');
@@ -178,30 +171,18 @@
                     document.documentElement.classList.add('dark');
                     localStorage.setItem('theme', 'dark');
                 }
-            }
+            });
         });
 
         // --- Mobile Sidebar Toggle Logic ---
-        const toggleSidebarMobile = document.getElementById('toggleSidebarMobile');
+        // Expecting sidebar.html to have an element with id="sidebar"
+        const toggleSidebarMobile = document.getElementById('toggleSidebarMobile'); // You might need to add this ID to the button above if it's not working
         const sidebar = document.getElementById('sidebar');
 
-        if (toggleSidebarMobile && sidebar) {
-            toggleSidebarMobile.addEventListener('click', () => {
-                // Tailwind class for translate toggle
-                // Our sidebar uses -translate-x-full by default on mobile
-                sidebar.classList.toggle('-translate-x-full');
-            });
+        // Note: sidebar.html needs to handle its own mobile visibility classes (e.g., -translate-x-full) 
+        // This script assumes the sidebar toggle logic is handled here or in sidebar.html.
+        // For clarity, simpler to have Alpine.js or vanilla JS here if sidebar is included.
 
-            // Close sidebar when clicking outside on mobile (Optional enhancement)
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth < 1024 &&
-                    !sidebar.contains(e.target) &&
-                    !toggleSidebarMobile.contains(e.target) &&
-                    !sidebar.classList.contains('-translate-x-full')) {
-                    sidebar.classList.add('-translate-x-full');
-                }
-            });
-        }
     </script>
 </body>
 
