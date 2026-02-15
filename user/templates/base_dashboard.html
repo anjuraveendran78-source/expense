@@ -176,12 +176,28 @@
 
         // --- Mobile Sidebar Toggle Logic ---
         // Expecting sidebar.html to have an element with id="sidebar"
-        const toggleSidebarMobile = document.getElementById('toggleSidebarMobile'); // You might need to add this ID to the button above if it's not working
+        const toggleSidebarMobile = document.getElementById('toggleSidebarMobile');
         const sidebar = document.getElementById('sidebar');
 
-        // Note: sidebar.html needs to handle its own mobile visibility classes (e.g., -translate-x-full) 
-        // This script assumes the sidebar toggle logic is handled here or in sidebar.html.
-        // For clarity, simpler to have Alpine.js or vanilla JS here if sidebar is included.
+        if (toggleSidebarMobile && sidebar) {
+            toggleSidebarMobile.addEventListener('click', () => {
+                // Toggle the class that hides the sidebar off-screen
+                sidebar.classList.toggle('-translate-x-full');
+
+                // Optional: Handle aria-expanded attribute
+                const isExpanded = sidebar.classList.contains('-translate-x-full') ? 'false' : 'true';
+                toggleSidebarMobile.setAttribute('aria-expanded', isExpanded);
+            });
+        }
+
+        // Close sidebar when clicking outside (optional polish)
+        document.addEventListener('click', (event) => {
+            if (sidebar && !sidebar.contains(event.target) && !toggleSidebarMobile.contains(event.target)) {
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full'); // Hide it
+                }
+            }
+        });
 
     </script>
 </body>
