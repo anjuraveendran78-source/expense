@@ -1,17 +1,111 @@
- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
- <aside class="w-64 min-h-screen bg-white shadow-md p-6 mt-6">
-      <h2 class="text-xl font-bold mb-6 text-indigo-600">Menu</h2>
-      <ul class="space-y-3 text-gray-700">
-        <li><a href="{% url 'add_family_member' %}" class="hover:text-indigo-600">Register Family</a></li>
-        
-        <li><a href="{% url 'Expense_page' %}" class="hover:text-indigo-600">User Expense</a></li>
-        <li><a href="{% url 'reports_page' %}" class="hover:text-indigo-600">Report</a></li>
-        <li><a href="{% url 'Category_page' %}" class="hover:text-indigo-600">Category</a></li>
-        <li><a href="{% url 'Reminder1_page' %}" class="hover:text-indigo-600">Add Reminders</a></li>
-        <li><a href="{% url 'Memberlist_page' %}" class="hover:text-indigo-600">Family Member List</a></li>
-        <!-- <li><a href="{% url 'paypage' %}" class="hover:text-indigo-600">Payment</a></li> -->
-        <li><a href="{% url 'reminder_list1' %}" class="hover:text-indigo-600">Your reminders</a></li>
-        <li><a href="{% url 'Transaction1_page' %}" class="hover:text-indigo-600">User Transaction List</a></li>
-        <li><a href="{% url 'Categorylist_page' %}" class="hover:text-indigo-600">Category List</a></li>
-      </ul>
-    </aside>
+<aside id="sidebar"
+  class="fixed z-20 h-full top-0 left-0 pt-16 flex lg:flex flex-shrink-0 flex-col w-64 transition-transform -translate-x-full lg:translate-x-0 duration-200"
+  aria-label="Sidebar">
+  <div
+    class="relative flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white pt-0 dark:bg-slate-800 dark:border-slate-700">
+    <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+      <div class="flex-1 px-3 bg-white dark:bg-slate-800 space-y-1">
+        <h2 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 mt-2">
+          Main Menu
+        </h2>
+        <ul class="space-y-2 pb-2">
+          <li>
+            <a href="{% url 'UserHome_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <!-- <svg
+                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+              </svg> -->
+              <span class="ml-3">Home</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'Dashboard1_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <!-- <svg
+                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+              </svg> -->
+              <span class="ml-3">Dashboard</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'Expense_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Add Expense</span>
+              <span
+                class="inline-flex justify-center items-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-slate-600 dark:text-gray-300">+</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'Transaction1_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Transactions</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'reports_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Reports</span>
+            </a>
+          </li>
+
+          <li class="pt-4 mt-4 space-y-2 border-t border-gray-200 dark:border-gray-700">
+            <span class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</span>
+          </li>
+
+          <li>
+            <a href="{% url 'Category_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Add Category</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'Categorylist_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Category List</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'add_family_member' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Register Family</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'Memberlist_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Family Members</span>
+            </a>
+          </li>
+
+          <li class="pt-4 mt-4 space-y-2 border-t border-gray-200 dark:border-gray-700">
+            <span class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Reminders</span>
+          </li>
+
+          <li>
+            <a href="{% url 'Reminder1_page' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Add Reminder</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'reminder_list1' %}"
+              class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700 group transition-all duration-200">
+              <span class="flex-1 ml-3 whitespace-nowrap">Your Reminders</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</aside>

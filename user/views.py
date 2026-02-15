@@ -2,6 +2,7 @@ from django.http import HttpResponse # type: ignore
 from django .shortcuts import render,redirect,get_object_or_404 # type: ignore
 from .models import Registration, Notification, Transaction, Category, Reminder
 from .forms import LoginForm, RegistrationForm,TransactionForm,DashboardForm,ResetForm,CategoryForm,ReminderForm
+from django.contrib.auth.hashers import make_password, check_password
 # from .util import get_phonepe_client,meta_info_generation,buil_request
 from django.urls import reverse
 from uuid import uuid4
@@ -122,17 +123,22 @@ def user_login_page(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        user = Registration.objects.filter(username=username, password=password).first()
-        if not user:
+        
+        # Get user by username first
+        user = Registration.objects.filter(username=username).first()
+        
+        # Verify password hash
+        if user and check_password(password, user.password):
+            request.session["username"] = user.username
+            request.session["user_id"] = user.id
+            request.session["role"] = user.role
+            if user.role == "user":
+                return redirect("UserHome_page")
+            else:
+                return redirect("FamHome_page")
+        else:
             messages.error(request,"invalid user name or password")
             return redirect('login_page')
-        request.session["username"] = user.username
-        request.session["user_id"] = user.id
-        request.session["role"] = user.role
-        if user.role == "user":
-            return redirect("UserHome_page")
-        else:
-            return redirect("FamHome_page")
     
     return render(request, "login.html")
 
@@ -155,8 +161,8 @@ def user_reg1_page(request):
 
             Registration.objects.create(
             username=username,
-            password=password,
-            confirm_password=confirm_password,
+            password=make_password(password), # Hash password
+            confirm_password=make_password(confirm_password), # Hash confirm (though redundancy is debatable, keeping for schema consistency)
             email_id=email_id,
             phn_no=phn_no,
             location=location,
@@ -204,7 +210,8 @@ def user_reg2_page(request):
         try:
             Registration.objects.create(
                 username=username,
-                password=password,
+                password=make_password(password),
+                confirm_password=make_password(password), # Ensuring consistency
                 email_id=email_id,
                 phn_no=phn_no,
                 location=location,
@@ -485,8 +492,13 @@ def user_reminder1_page(request):
         form = ReminderForm(request.POST)
 
         if form.is_valid():
+            # Get logged in user
+            user_id = request.session.get("user_id")
+            user = get_object_or_404(Registration, id=user_id)
+            
             reminder = form.save(commit=False)
             reminder.owner_type = 'user'
+            reminder.by = user  # Assign the user
             reminder.save()
 
             # ================= SEND EMAIL =================
@@ -523,8 +535,13 @@ def user_reminder2_page(request):
         form = ReminderForm(request.POST)
 
         if form.is_valid():
+            # Get logged in user
+            user_id = request.session.get("user_id")
+            user = get_object_or_404(Registration, id=user_id)
+
             reminder = form.save(commit=False)
             reminder.owner_type = 'family'
+            reminder.by = user # Assign the user
             reminder.save()
 
             subject = "Family Reminder Created"
@@ -779,8 +796,8 @@ def reset_password(request):
         if p1 != p2:
             messages.error(request, "Passwords do not match")
         else:
-            user.password = p1
-            user.confirm_password = p1
+            user.password = make_password(p1)
+            user.confirm_password = make_password(p1)
             user.otp = None
             user.save()
             messages.success(request, "Password reset successful")

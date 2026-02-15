@@ -1,76 +1,86 @@
+{% extends 'base_dashboard.html' %}
 {% load static %}
 {% load widget_tweaks %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Make Reminders</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
+{% block title %}Add Reminder - Expense Tracker{% endblock %}
 
-<body class="bg-gray-100 min-h-screen">
+{% block content %}
+<div class="flex justify-center items-start min-h-[70vh] pt-10 animate-fade-in-up">
 
-<!-- ====================== HEADER ====================== -->
-{% if role == 'user' %}
-    {%include 'user_header.html' %}
-    {% else %}
-    {% include 'fam_header.html' %}
-    {% endif %}
+  <div
+    class="w-full max-w-xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
 
-<div class="flex">
+    <!-- Header -->
+    <div class="bg-slate-50 dark:bg-slate-900/50 px-8 py-6 border-b border-gray-100 dark:border-slate-700 text-center">
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Set Reminder</h2>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Don't miss a payment or a goal</p>
+    </div>
 
- {% if role == 'user' %}
-    {%include 'sidebar.html' %}
-    {% else %}
-    {% include 'fm_side_bar.html' %}
-    {% endif %}
-
-<!-- ====================== MAIN FORM ====================== -->
-<main class="flex-1 p-10">
-
-  <div class="max-w-xl bg-white rounded-xl shadow-lg p-8">
-
-    <h1 class="text-2xl font-bold mb-6">Make Reminder</h1>
-
-    <form method="post" action="{% url 'user_reminder1_page' %}" class="space-y-5">
+    <form method="post" action="{% url 'user_reminder1_page' %}" class="p-8 space-y-6">
       {% csrf_token %}
 
-      <div>
-        {{ forms.date.label_tag }}
-        {{ forms.date|add_class:"w-full border rounded-lg p-2" }}
-        {{ forms.date.errors }}
+      <!-- Error Handling -->
+      {% if forms.errors %}
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+        {% for field in forms %}
+        {% for error in field.errors %}
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium">{{ field.label }}: {{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+        {% for error in forms.non_field_errors %}
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Date -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {{ forms.date.label }}
+          </label>
+          {{ forms.date }}
+        </div>
+
+        <!-- Time -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {{ forms.time.label }}
+          </label>
+          {{ forms.time }}
+        </div>
+
+        <!-- Email -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {{ forms.Email_id.label }}
+          </label>
+          {{ forms.Email_id }}
+        </div>
+
+        <!-- Description -->
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {{ forms.Reminder_desc.label }}
+          </label>
+          {{ forms.Reminder_desc }}
+        </div>
       </div>
 
-      <div>
-        {{ forms.time.label_tag }}
-        {{ forms.time|add_class:"w-full border rounded-lg p-2" }}
-        {{ forms.time.errors }}
-      </div>
-
-      <div>
-        {{ forms.Reminder_desc.label_tag }}
-        {{ forms.Reminder_desc|add_class:"w-full border rounded-lg p-2" }}
-        {{ forms.Reminder_desc.errors }}
-      </div>
-
-      <div>
-        {{ forms.Email_id.label_tag }}
-        {{ forms.Email_id|add_class:"w-full border rounded-lg p-2" }}
-        {{ forms.Email_id.errors }}
-      </div>
-
-
+      <!-- Submit Button -->
       <button type="submit"
-        class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">
-        Save Reminder
+        class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5 mt-4">
+        Set Reminder
       </button>
+
+      <div class="text-center mt-4">
+        <a href="{% url 'reminder_list1' %}"
+          class="text-sm text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+          View My Reminders
+        </a>
+      </div>
+
     </form>
-
   </div>
-
-</main>
 </div>
-
-</body>
-</html>
+{% endblock %}
