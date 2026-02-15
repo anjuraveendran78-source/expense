@@ -1,0 +1,12 @@
+django
+django-tailwind
+django-widget-tweaks
+pillow
+requests
+xhtml2pdf
+apscheduler
+pyhanko
+reportlab
+svglib
+pytailwindcss
+phonepe-pg-sdk-python

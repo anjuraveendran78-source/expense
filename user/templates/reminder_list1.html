@@ -1,90 +1,82 @@
+{% extends 'base_dashboard.html' %}
 {% load static %}
-{% load widget_tweaks %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Reminder List</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
+{% block title %}Reminders - Expense Tracker{% endblock %}
 
-<body class="bg-gray-100 min-h-screen">
+{% block content %}
+<div class="animate-fade-in-up">
 
-<!-- ====================== HEADER ====================== -->
-{% if role == 'user' %}
-    {%include 'user_header.html' %}
-    {% else %}
-    {% include 'fam_header.html' %}
-    {% endif %}
-
-<div class="flex">
-
-<!-- Sidebar -->
-
-
-{% if role == 'user' %}
-    {%include 'sidebar.html' %}
-    {% else %}
-    {% include 'fm_side_bar.html' %}
-    {% endif %}
-
-<!-- ====================== MAIN CONTENT ====================== -->
-<main class="flex-1 p-8">
-
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Reminder List</h1>
-
-  <div class="bg-white shadow-md rounded-lg overflow-x-auto">
-
-    <table class="min-w-full border border-gray-300">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="px-4 py-3 border text-left">Date</th>
-          <th class="px-4 py-3 border text-left">Time</th>
-          <th class="px-4 py-3 border text-left">Reminder Description</th>
-          <th class="px-4 py-3 border text-left">Email ID</th>
-          <th class="px-4 py-3 border text-center">Actions</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for r in reminders %}
-        <tr class="hover:bg-gray-50 transition">
-          <td class="px-4 py-2 border">{{ r.date }}</td>
-          <td class="px-4 py-2 border">{{ r.time }}</td>
-          <td class="px-4 py-2 border">{{ r.Reminder_desc }}</td>
-          <td class="px-4 py-2 border">{{ r.Email_id }}</td>
-
-          <td class="px-4 py-2 border text-center space-x-2">
-            <a href="{% url 'remind1_edit_page' r.id %}"
-               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-              Edit
-            </a>
-
-            <a href="{% url 'remind1_delete' r.id %}"
-               onclick="return confirm('Delete this reminder?')"
-               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-              Delete
-            </a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="5" class="text-center py-6 text-gray-500">
-            No reminders found
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Reminders</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-sm">Upcoming scheduled payments</p>
+    </div>
+    <a href="{% url 'Reminder1_page' %}"
+      class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Set Reminder
+    </a>
   </div>
 
-</main>
+  <div
+    class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-4">Date</th>
+            <th scope="col" class="px-6 py-4">Time</th>
+            <th scope="col" class="px-6 py-4">Description</th>
+            <th scope="col" class="px-6 py-4">Email</th>
+            <th scope="col" class="px-6 py-4 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reminders %}
+          <tr
+            class="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+            <td class="px-6 py-4 text-slate-700 dark:text-slate-300">
+              {{ r.date }}
+            </td>
+            <td class="px-6 py-4 text-slate-700 dark:text-slate-300">
+              {{ r.time }}
+            </td>
+            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+              {{ r.Reminder_desc }}
+            </td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400">
+              {{ r.Email_id }}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex items-center justify-center space-x-3">
+                <a href="{% url 'remind1_edit_page' r.id %}"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                <a href="{% url 'remind1_delete' r.id %}" onclick="return confirm('Delete this reminder?')"
+                  class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-6 py-10 text-center text-slate-500 dark:text-slate-400">
+              <div class="flex flex-col items-center justify-center">
+                <svg class="w-12 h-12 mb-3 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                  </path>
+                </svg>
+                <p class="text-lg font-medium">No reminders set</p>
+                <p class="text-sm mt-1">Set a reminder for your upcoming expenses.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-
-<footer class="bg-white mt-16 py-4 border-t">
-  <div class="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
-      © 2025 Your College / Project Name — All Rights Reserved.
-  </div>
-</footer>
+{% endblock %}

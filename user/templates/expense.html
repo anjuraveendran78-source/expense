@@ -1,127 +1,178 @@
+{% extends 'base_dashboard.html' %}
 {% load static %}
 {% load widget_tweaks %}
-{% if role == 'user' %}
-{%include 'user_header.html' %}
-{% else %}
-{% include 'fam_header.html' %}
-{% endif %}
-<!-- ================= PAGE BODY ================= -->
-<div class="flex flex-1">
 
-  {% if role == 'user' %}
-  {%include 'sidebar.html' %}
-  {% else %}
-  {% include 'fm_side_bar.html' %}
-  {% endif %} <!-- ===== Main Content ===== -->
-  <main class="flex-1 p-10 flex justify-center items-start">
+{% block title %}Add Transaction - Expense Tracker{% endblock %}
 
-    <div class="bg-white w-full max-w-2xl p-8 ">
+{% block content %}
+<div class="flex justify-center items-start min-h-[80vh] pt-10 animate-fade-in-up">
 
-      <h2 class="text-2xl font-bold mb-6 text-center">Add Transaction</h2>
+  <div
+    class="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
 
-      <form method="post" action="{% url 'user_expense_page' %}"
-        class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg space-y-8">
-        {% if forms.amount.errors %}
-        <p class="text-sm text-red-500 mt-1">{{ forms.amount.errors.0 }}</p>
-        {% endif %}
-
-
-        {% csrf_token %}
-
-       
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          <!-- Transaction ID (optional / read-only if needed) -->
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.id.label }}
-            </label>
-            {{ forms.id|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-          </div>
-
-          <!-- Date -->
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.date.label }}
-            </label>
-            {{ forms.date|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-          </div>
-
-          <!-- Amount -->
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.amount.label }}
-            </label>
-            {{ forms.amount|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-          </div>
-
-          <!-- Category -->
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.category_id.label }}
-            </label>
-            {{ forms.category_id|add_class:"w-full border border-gray-300 px-4 py-2 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-          </div>
-
-          <!-- Description -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.Transaction_desc.label }}
-            </label>
-            {{ forms.Transaction_desc|add_class:"w-full border border-gray-300 px-4 py-3 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:outline-none" }}
-          </div>
-
-          <!-- Type -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-600 mb-1">
-              {{ forms.Type.label }}
-            </label>
-            {{ forms.Type|add_class:"w-full border px-4 py-2 rounded-lg bg-white focus:ring-2 focus:outline-none transition" }}
-          </div>
-
-        </div>
-
-        <!-- Submit -->
-        <div class="flex justify-center pt-4">
-          <button type="submit" class="px-10 py-3 rounded-xl bg-indigo-600 text-white font-semibold
-             hover:bg-indigo-700 transition shadow-md">
-            Save Transaction
-          </button>
-        </div>
-
-      </form>
-
-
+    <!-- Header -->
+    <div class="bg-slate-50 dark:bg-slate-900/50 px-8 py-6 border-b border-gray-100 dark:border-slate-700">
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-white text-center">Add Transaction</h2>
+      <p class="text-center text-slate-500 dark:text-slate-400 text-sm mt-1">Keep track of your spending</p>
     </div>
 
-  </main>
+    <form method="post" action="{% url 'user_expense_page' %}" class="p-8 space-y-6">
+      {% csrf_token %}
 
+      <!-- Error Handling -->
+      {% if forms.errors %}
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+        {% for field in forms %}
+        {% for error in field.errors %}
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium">{{ field.label }}: {{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+        {% for error in forms.non_field_errors %}
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Toggle Income / Expense -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <button type="button" id="btn-income"
+          class="py-3 rounded-xl font-semibold text-sm transition-all border-2 border-emerald-500/20 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/10 hover:bg-emerald-100 dark:hover:bg-emerald-900/20">
+          Income
+        </button>
+        <button type="button" id="btn-expense"
+          class="py-3 rounded-xl font-semibold text-sm transition-all border-2 border-red-500/20 hover:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20">
+          Expense
+        </button>
+      </div>
+
+      <!-- Hidden Input for Logic -->
+      {{ forms.Type }}
+
+      <div class="space-y-6">
+
+        <!-- Date & Amount Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Date
+            </label>
+            {{ forms.date }}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Amount
+            </label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">₹</span>
+              {{ forms.amount }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            Category
+          </label>
+          {{ forms.category_id }}
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            Description
+          </label>
+          {{ forms.Transaction_desc }}
+        </div>
+
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 mt-4">
+        Save Transaction
+      </button>
+
+    </form>
+  </div>
 </div>
 
 <script>
-  const typeField = document.querySelector('[name="Type"]');
+  document.addEventListener('DOMContentLoaded', function () {
+    const typeSelect = document.querySelector('select[name="Type"]') || document.querySelector('input[name="Type"]');
+    const btnIncome = document.getElementById('btn-income');
+    const btnExpense = document.getElementById('btn-expense');
 
-  function updateTypeColor() {
-    typeField.classList.remove(
-      'border-green-400', 'bg-green-50', 'text-green-700',
-      'border-red-400', 'bg-red-50', 'text-red-700',
-      'focus:ring-green-400', 'focus:ring-red-400'
-    );
+    // Classes for active/inactive states
+    const activeIncomeClass = ['bg-white', 'dark:bg-slate-800', 'text-emerald-600', 'shadow-sm'];
+    const inactiveClass = ['text-slate-500', 'hover:bg-white/50', 'dark:hover:bg-slate-600/50'];
+    const activeExpenseClass = ['bg-white', 'dark:bg-slate-800', 'text-red-600', 'shadow-sm'];
 
-    if (typeField.value === 'Income') {
-      typeField.classList.add(
-        'border-green-400', 'bg-green-50', 'text-green-700',
-        'focus:ring-green-400'
-      );
-    } else if (typeField.value === 'Expense') {
-      typeField.classList.add(
-        'border-red-400', 'bg-red-50', 'text-red-700',
-        'focus:ring-red-400'
-      );
+    function updateUI(details) {
+      // Reset
+      btnIncome.classList.remove(...activeIncomeClass);
+      btnExpense.classList.remove(...activeExpenseClass);
+      btnIncome.classList.add(...inactiveClass);
+      btnExpense.classList.add(...inactiveClass);
+
+      if (details === 'Income') {
+        btnIncome.classList.remove(...inactiveClass);
+        btnIncome.classList.add(...activeIncomeClass);
+      } else {
+        btnExpense.classList.remove(...inactiveClass);
+        btnExpense.classList.add(...activeExpenseClass);
+      }
     }
-  }
 
-  typeField.addEventListener('change', updateTypeColor);
-  updateTypeColor(); // run on page load
+    // Click Handlers
+    btnIncome.addEventListener('click', () => {
+      if (typeSelect.tagName === 'SELECT') {
+        // Loop options to find Income
+        for (let i = 0; i < typeSelect.options.length; i++) {
+          if (typeSelect.options[i].text === 'Income' || typeSelect.options[i].value === 'Income') {
+            typeSelect.selectedIndex = i;
+            break;
+          }
+        }
+      } else {
+        typeSelect.value = 'Income';
+      }
+      updateUI('Income');
+    });
+
+    btnExpense.addEventListener('click', () => {
+      if (typeSelect.tagName === 'SELECT') {
+        for (let i = 0; i < typeSelect.options.length; i++) {
+          if (typeSelect.options[i].text === 'Expense' || typeSelect.options[i].value === 'Expense') {
+            typeSelect.selectedIndex = i;
+            break;
+          }
+        }
+      } else {
+        typeSelect.value = 'Expense';
+      }
+      updateUI('Expense');
+    });
+
+    // Initialize based on current value (default or bound)
+    const currentVal = typeSelect.value || 'Expense'; // Default to Expense if empty? Or check options
+    // If select, get text
+    let initialType = currentVal;
+    if (typeSelect.tagName === 'SELECT') {
+      initialType = typeSelect.options[typeSelect.selectedIndex].text;
+    }
+
+    // Normalize
+    if (initialType.includes('Income')) {
+      updateUI('Income');
+      // Ensure select is synced if default wasn't set
+      if (typeSelect.value === '') {
+        // Sync?
+      }
+    } else {
+      updateUI('Expense');
+    }
+  });
 </script>
+{% endblock %}

@@ -4,41 +4,42 @@ from .models import Registration, Notification, Transaction, Category, Reminder
 
 # ===================== REGISTRATION FORM =====================
 
+# ===================== REGISTRATION FORM =====================
+
 class RegistrationForm(forms.ModelForm):
     class Meta:
         model = Registration
         fields = ['username', 'password', 'confirm_password', 'email_id', 'phn_no', 'location']
 
-
         widgets = {
             'email_id': forms.EmailInput(attrs={
                 "placeholder": "Enter your email",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
             'username': forms.TextInput(attrs={
                 "placeholder": "Enter your username",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
             'location': forms.TextInput(attrs={
                 "placeholder": "Enter your Location",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
             'password': forms.PasswordInput(attrs={
                 "placeholder": "Enter password",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
             'confirm_password': forms.PasswordInput(attrs={
                 "placeholder": "Enter password again",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
             'phn_no': forms.NumberInput(attrs={
                 "placeholder": "Enter phone number",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
 
@@ -53,11 +54,11 @@ class LoginForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(attrs={
                 "placeholder": "Enter password",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
             'username': forms.TextInput(attrs={
                 "placeholder": "Enter username",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
 
@@ -75,23 +76,30 @@ class TransactionForm(forms.ModelForm):
         }
 
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all'
+            }),
+
+            'category_id': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all'
+            }),
 
             'Type': forms.Select(choices=[
                 ('Income', 'Income'),
                 ('Expense', 'Expense')
             ], attrs={
-                'class': 'form-control'
+                'class': 'hidden' # Visual toggle handles this in template, but keep hidden input
             }),
 
             'amount': forms.NumberInput(attrs={
                 'placeholder': 'Enter amount',
-                'class': 'form-control',
+                'class': 'w-full pl-8 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all',
             }),
 
             'Transaction_desc': forms.TextInput(attrs={
                 'placeholder': 'Enter transaction description',
-                'class': 'form-control',
+                'class': 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all',
             }),
         }
 
@@ -107,7 +115,7 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'category_type': forms.TextInput(attrs={
                 "placeholder": "Enter category type",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
 
@@ -120,15 +128,21 @@ class ReminderForm(forms.ModelForm):
         fields = ['date', 'time', 'Reminder_desc', 'Email_id']
 
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
-            'time': forms.TimeInput(attrs={'type': 'time'}),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all'
+            }),
+            'time': forms.TimeInput(attrs={
+                'type': 'time',
+                'class': 'w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all'
+            }),
             'Reminder_desc': forms.TextInput(attrs={
                 "placeholder": "Enter description",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-24 resize-none",
             }),
             'Email_id': forms.EmailInput(attrs={
                 "placeholder": "Enter email",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
 
@@ -151,11 +165,11 @@ class ResetForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(attrs={
                 "placeholder": "Enter password",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
             'email_id': forms.EmailInput(attrs={
                 "placeholder": "Enter email",
-                "class": "form-control",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
 
