@@ -55,8 +55,35 @@ def Expense_page(request):
         'role':role})
 
 def Dashboard1_page(request):
-    Dashboard1=DashboardForm()
-    return render(request, 'dashboard1.html', {'forms':Dashboard1})
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_login_page')
+    
+    user = get_object_or_404(Registration, id=user_id)
+    role = user.role
+    
+    # Fetch transactions
+    transactions = Transaction.objects.filter(by=user).order_by('-date')
+    
+    # Calculate totals
+    income = transactions.filter(Type__icontains="income").aggregate(total=Sum("amount"))["total"] or 0
+    expense = transactions.filter(Type__icontains="expense").aggregate(total=Sum("amount"))["total"] or 0
+    balance = income - expense
+    
+    # Recent transactions (last 5)
+    recent_transactions = transactions[:5]
+    
+    context = {
+        'role': role,
+        'user': user,
+        'income_total': income,
+        'expense_total': expense,
+        'balance': balance,
+        'transactions': recent_transactions,
+        'forms': DashboardForm() # Keep existing form just in case
+    }
+    
+    return render(request, 'dashboard1.html', context)
 
 def Dashboard2_page(request):
     Dashboard2=DashboardForm()
@@ -633,17 +660,23 @@ def user_email_page(request):
 
 
 def reports_page(request):
-    role = request.session.get("role")
-    if role == "user":
-        transactions = Transaction.objects.all()
-    else:
-        transactions = Transaction.objects.all()
+    # role = request.session.get("role")
+    # if role == "user":
+    #     transactions = Transaction.objects.all()
+    # else:
+    #     transactions = Transaction.objects.all()
     
-    user_id  =  request.session.get('user_id')
-    user = get_object_or_404(
-        Registration,id=user_id
-    )
-    role =  user.role
+    # user_id  =  request.session.get('user_id')
+    # user = get_object_or_404(
+    #     Registration,id=user_id
+    # )
+    # role =  user.role
+    
+    user_id = request.session.get('user_id')
+    user = get_object_or_404(Registration, id=user_id)
+    role = user.role
+
+    transactions = Transaction.objects.filter(by=user)
     range_type = request.GET.get("range")
     start = request.GET.get("start")
     end = request.GET.get("end")
