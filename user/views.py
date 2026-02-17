@@ -22,7 +22,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from .util import send_email
-
+from django.utils.timezone import now
 
 #BASIC Page Renders
 
@@ -104,7 +104,6 @@ def Category_page(request):
         'forms':category,
         'role':role
         })
-
 
 def Familyreg_page(request):
     familyregister=RegistrationForm()
@@ -261,8 +260,6 @@ def user_reg2_page(request):
             return redirect("Familyreg_page")
 
     return redirect("Familyreg_page")
-
-
 
 
 def Transaction1_page(request):
@@ -673,63 +670,39 @@ def user_email_page(request):
 
 
 def reports_page(request):
-    # role = request.session.get("role")
-    # if role == "user":
-    #     transactions = Transaction.objects.all()
-    # else:
-    #     transactions = Transaction.objects.all()
-    
-    # user_id  =  request.session.get('user_id')
-    # user = get_object_or_404(
-    #     Registration,id=user_id
-    # )
-    # role =  user.role
-    
+
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect("login_page")
+
     user = get_object_or_404(Registration, id=user_id)
-    print("LOGGED IN USER:", user.username, "ROLE:", user.role)
     role = user.role
-    print("before condition")
 
     mode = request.GET.get("mode", "individual")
-    print("REPORTS - MODE:", mode)
 
-    user = request.user   # IMPORTANT
+    # ------------------ MODE LOGIC ------------------
 
-    if mode == "family" and role == "main":
+    if mode == "family" and role == "user":
 
-        members = Registration.objects.filter(parent=user_id)
+    # Get family members
+        members = Registration.objects.filter(parent=user)
 
-        print("FAMILY MEMBERS:", members.count())
-
+    # Create list of user IDs (members + main user)
         user_ids = list(members.values_list("id", flat=True))
         user_ids.append(user.id)
 
-        print("ALL USER IDS:", user_ids)
-
-        transactions = Transaction.objects.filter(
-            by__in=user_ids
-        )
-
-        print("FAMILY TRANSACTIONS COUNT:", transactions.count())
+    # Get transactions of both
+        transactions = Transaction.objects.filter(by__in=user_ids)
 
     else:
-
+        # My report (only logged user)
         transactions = Transaction.objects.filter(by=user)
 
-        print("INDIVIDUAL TRANSACTIONS COUNT:", transactions.count())
-
-
-    print("USER ROLE:", role)
-
-    # DO NOT overwrite transactions here ❗
+    # ------------------ DATE FILTER ------------------
 
     range_type = request.GET.get("range")
     start = request.GET.get("start")
     end = request.GET.get("end")
-
-
-    # ------------------ APPLY FILTERS ------------------
 
     if range_type == "this_month":
         today = datetime.today().date()
@@ -747,8 +720,14 @@ def reports_page(request):
 
     # ------------------ SUMMARY ------------------
 
-    income_total = transactions.filter(Type__icontains="income").aggregate(total=Sum("amount"))["total"] or 0
-    expense_total = transactions.filter(Type__icontains="expense").aggregate(total=Sum("amount"))["total"] or 0
+    income_total = transactions.filter(Type__iexact="income").aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
+    expense_total = transactions.filter(Type__iexact="expense").aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
     balance = income_total - expense_total
 
     # ------------------ MONTHLY CHART ------------------
@@ -758,8 +737,8 @@ def reports_page(request):
         .annotate(month=TruncMonth("date"))
         .values("month")
         .annotate(
-            income=Sum("amount", filter=Q(Type__icontains="income")),
-            expense=Sum("amount", filter=Q(Type__icontains="expense"))
+            income=Sum("amount", filter=Q(Type__iexact="income")),
+            expense=Sum("amount", filter=Q(Type__iexact="expense"))
         )
         .order_by("month")
     )
@@ -769,7 +748,7 @@ def reports_page(request):
     expense_data = []
 
     for row in monthly:
-        if row["month"] is not None:
+        if row["month"]:
             months.append(row["month"].strftime("%b %Y"))
             income_data.append(row["income"] or 0)
             expense_data.append(row["expense"] or 0)
@@ -778,7 +757,7 @@ def reports_page(request):
 
     category_data = (
         transactions
-        .filter(Type__icontains="expense")
+        .filter(Type__iexact="expense")
         .values("category_id__category_type")
         .annotate(total=Sum("amount"))
     )
@@ -786,15 +765,13 @@ def reports_page(request):
     category_labels = [c["category_id__category_type"] for c in category_data]
     category_values = [c["total"] for c in category_data]
 
-    # ------------------ RENDER ------------------
-
     return render(request, "reports.html", {
-        'role':role,
+        "role": role,
+        "mode": mode,
         "income": income_total,
         "expense": expense_total,
         "balance": balance,
         "transactions": transactions,
-        
 
         "months_json": json.dumps(months),
         "income_json": json.dumps(income_data),
@@ -804,25 +781,63 @@ def reports_page(request):
     })
 
 
-
 def generate_pdf(request):
-    transactions = Transaction.objects.all()
-    income = transactions.filter(Type__iexact='income').aggregate(total=Sum('amount'))['total'] or 0
-    expense = transactions.filter(Type__iexact='expense').aggregate(total=Sum('amount'))['total'] or 0
 
-    balance = income - expense
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return redirect("login_page")
 
+    user = get_object_or_404(Registration, id=user_id)
+
+    # ----------- INDIVIDUAL TRANSACTIONS -----------
+    individual_transactions = Transaction.objects.filter(by=user)
+
+    individual_income = individual_transactions.filter(
+        Type__iexact="income"
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    individual_expense = individual_transactions.filter(
+        Type__iexact="expense"
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    individual_balance = individual_income - individual_expense
+
+    # ----------- FAMILY TRANSACTIONS -----------
+    members = Registration.objects.filter(parent=user)
+
+    family_transactions = Transaction.objects.filter(
+        Q(by=user) | Q(by__in=members)
+    )
+
+    family_income = family_transactions.filter(
+        Type__iexact="income"
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    family_expense = family_transactions.filter(
+        Type__iexact="expense"
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    family_balance = family_income - family_expense
+
+    # ----------- RENDER PDF -----------
     template = get_template("report_pdf.html")
     html = template.render({
-        'transactions': transactions,
-        'income': income,
-        'expense': expense,
-        'balance': balance,
+        "individual_transactions": individual_transactions,
+        "individual_income": individual_income,
+        "individual_expense": individual_expense,
+        "individual_balance": individual_balance,
+
+        "family_transactions": family_transactions,
+        "family_income": family_income,
+        "family_expense": family_expense,
+        "family_balance": family_balance,
     })
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="expense_report.pdf"'
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "attachment; filename=expense_report.pdf"
+
     pisa.CreatePDF(html, dest=response)
+
     return response
 
 

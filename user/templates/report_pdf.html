@@ -2,45 +2,84 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<style>
+body { font-family: Arial; font-size: 12px; }
+h2 { text-align: center; margin-top: 20px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { border: 1px solid #000; padding: 6px; }
+th { background: #f2f2f2; }
+.right { text-align: right; }
+.section-title { background: #ddd; padding: 5px; font-weight: bold; margin-top:20px; }
+</style>
 </head>
+
 <body>
 
-<h2 style="text-align:center;">Expense Report</h2>
+<h2>Expense Report</h2>
 
-<table width="100%" cellspacing="0" cellpadding="6" border="1">
-<tr>
-  <td><b>Total Income</b></td>
-  <td>₹ {{ income }}</td>
-</tr>
-<tr>
-  <td><b>Total Expense</b></td>
-  <td>₹ {{ expense }}</td>
-</tr>
-<tr>
-  <td><b>Balance</b></td>
-  <td>₹ {{ balance }}</td>
-</tr>
+<!-- ================= INDIVIDUAL REPORT ================= -->
+<div class="section-title">Individual Report</div>
+
+<table>
+<tr><td><b>Total Income</b></td><td class="right">₹ {{ individual_income }}</td></tr>
+<tr><td><b>Total Expense</b></td><td class="right">₹ {{ individual_expense }}</td></tr>
+<tr><td><b>Balance</b></td><td class="right">₹ {{ individual_balance }}</td></tr>
 </table>
 
-<br>
-
-<table width="100%" cellspacing="0" cellpadding="6" border="1">
+<table>
 <tr>
-  <th>Date</th>
-  <th>Description</th>
-  <th>Type</th>
-  <th>Amount</th>
+<th>Date</th>
+<th>Member</th>
+<th>Description</th>
+<th>Type</th>
+<th>Amount</th>
 </tr>
 
-{% for t in transactions %}
+{% for t in individual_transactions %}
 <tr>
-  <td>{{ t.date }}</td>
-  <td>{{ t.Transaction_desc }}</td>
-  <td>{{ t.Type }}</td>
-  <td>₹ {{ t.amount }}</td>
+<td>{{ t.date|date:"d M Y" }}</td>
+<td>{{ t.by.username }}</td>
+<td>{{ t.Transaction_desc }}</td>
+<td>{{ t.Type }}</td>
+<td class="right">₹ {{ t.amount }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="5" align="center">No individual transactions</td></tr>
+{% endfor %}
+</table>
+
+
+<!-- ================= FAMILY REPORT ================= -->
+<div class="section-title">Family Report</div>
+
+<table>
+<tr><td><b>Total Income</b></td><td class="right">₹ {{ family_income }}</td></tr>
+<tr><td><b>Total Expense</b></td><td class="right">₹ {{ family_expense }}</td></tr>
+<tr><td><b>Balance</b></td><td class="right">₹ {{ family_balance }}</td></tr>
+</table>
+
+<table>
+<tr>
+<th>Date</th>
+<th>Member</th>
+<th>Description</th>
+<th>Type</th>
+<th>Amount</th>
+</tr>
+
+{% for t in family_transactions %}
+<tr>
+<td>{{ t.date|date:"d M Y" }}</td>
+<td>{{ t.by.username }}</td>
+<td>{{ t.Transaction_desc }}</td>
+<td>{{ t.Type }}</td>
+<td class="right">₹ {{ t.amount }}</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="5" align="center">No family transactions</td>
 </tr>
 {% endfor %}
-
 </table>
 
 </body>

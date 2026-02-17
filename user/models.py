@@ -11,7 +11,7 @@ class Registration(models.Model):
 
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
-    email_id = models.EmailField()
+    email_id = models.EmailField(unique=True)
     phn_no = models.CharField(max_length=15)
     location = models.CharField(max_length=100)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
