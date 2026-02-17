@@ -1,21 +1,31 @@
 from unicodedata import category
 from django.db import models # type: ignore
 
+
 class Registration(models.Model):
-    username = models.CharField(max_length=100,unique=True)
-    password = models.CharField(max_length=100)
-    confirm_password = models.CharField(max_length=100)
-    email_id = models.EmailField()
-    phn_no = models.CharField(max_length=15)
-    location = models.CharField(max_length=100)
 
     ROLE_CHOICES = (
         ('user', 'User'),
         ('family', 'Family Member'),
     )
 
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    email_id = models.EmailField()
+    phn_no = models.CharField(max_length=15)
+    location = models.CharField(max_length=100)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="family_members"
+    )
+
     otp = models.CharField(max_length=6, blank=True, null=True)
+
 
 class Notification(models.Model):
     time = models.CharField(max_length=50)

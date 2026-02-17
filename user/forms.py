@@ -6,19 +6,32 @@ from .models import Registration, Notification, Transaction, Category, Reminder
 
 # ===================== REGISTRATION FORM =====================
 
+from django import forms
+from .models import Registration
+from django.contrib.auth.hashers import make_password
+
+
 class RegistrationForm(forms.ModelForm):
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            "placeholder": "Confirm password",
+            "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
+        })
+    )
+
     class Meta:
         model = Registration
-        fields = ['username', 'password', 'confirm_password', 'email_id', 'phn_no', 'location']
+        fields = ['username', 'email_id', 'phn_no', 'location', 'password']
 
         widgets = {
-            'email_id': forms.EmailInput(attrs={
-                "placeholder": "Enter your email",
-                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
-            }),
 
             'username': forms.TextInput(attrs={
                 "placeholder": "Enter your username",
+                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
+            }),
+
+            'email_id': forms.EmailInput(attrs={
+                "placeholder": "Enter your email",
                 "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
@@ -32,16 +45,30 @@ class RegistrationForm(forms.ModelForm):
                 "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
 
-            'confirm_password': forms.PasswordInput(attrs={
-                "placeholder": "Enter password again",
-                "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
-            }),
-
-            'phn_no': forms.NumberInput(attrs={
+            'phn_no': forms.TextInput(attrs={   
                 "placeholder": "Enter phone number",
                 "class": "w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500",
             }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise forms.ValidationError("Passwords do not match")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.password = make_password(self.cleaned_data["password"])
+        user.role = "user"
+        if commit:
+            user.save()
+        return user
+
 
 
 # ===================== LOGIN FORM =====================
@@ -160,7 +187,7 @@ class DashboardForm(forms.ModelForm):
 class ResetForm(forms.ModelForm):
     class Meta:
         model = Registration
-        fields = ['email_id', 'password', 'confirm_password']
+        fields = ['email_id', 'password']
 
         widgets = {
             'password': forms.PasswordInput(attrs={

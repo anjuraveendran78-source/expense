@@ -181,38 +181,44 @@ def user_reg1_page(request):
         location = request.POST.get("location")
 
         if password != confirm_password:
-            messages.error(request,"passwords doent match")
+            messages.error(request, "Passwords do not match")
             return redirect("Register_page")
 
         try:
-
             Registration.objects.create(
-            username=username,
-            password=make_password(password), # Hash password
-            confirm_password=make_password(confirm_password), # Hash confirm (though redundancy is debatable, keeping for schema consistency)
-            email_id=email_id,
-            phn_no=phn_no,
-            location=location,
-            role="user"   # user
-        )
-            subject = "Registration confirmation"
-            body="Thank you for registering with us"
-            send_email(email_id,subject,body)
-        except IntegrityError as e:
-            messages.error(request,f"username already exists")
-            return redirect("Register_page")
+                username=username,
+                password=make_password(password),
+                email_id=email_id,
+                phn_no=phn_no,
+                location=location,
+                role="user"
+            )
 
+            subject = "Registration confirmation"
+            body = "Thank you for registering with us"
+            send_email(email_id, subject, body)
+
+        except IntegrityError:
+            messages.error(request, "Username already exists")
+            return redirect("Register_page")
 
         return redirect("user_login_page")
 
     return render(request, "user/user_register.html")
 
+
 #family member Registration Action Pages
 
 def user_reg2_page(request):
-    form = RegistrationForm()
+
     if request.method == "POST":
-        form = RegistrationForm()
+
+        logged_user_id = request.session.get("user_id")
+        if not logged_user_id:
+            return redirect("user_login_page")
+
+        parent_user = Registration.objects.get(id=logged_user_id)
+
         username = request.POST.get("username")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
@@ -220,12 +226,14 @@ def user_reg2_page(request):
         phn_no = request.POST.get("phn_no")
         location = request.POST.get("location")
 
-        
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
             return redirect("Familyreg_page")
 
-        
+        if Registration.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return redirect("Familyreg_page")
+
         if Registration.objects.filter(email_id=email_id).exists():
             messages.error(request, "Email already registered.")
             return redirect("Familyreg_page")
@@ -238,27 +246,23 @@ def user_reg2_page(request):
             Registration.objects.create(
                 username=username,
                 password=make_password(password),
-                confirm_password=make_password(password), # Ensuring consistency
                 email_id=email_id,
                 phn_no=phn_no,
                 location=location,
-                role="family"
+                role="family",
+                parent=parent_user
             )
 
             messages.success(request, "Family member registered successfully.")
-            return redirect("Memberlist_page")  
+            return redirect("Memberlist_page")
 
         except IntegrityError:
             messages.error(request, "User already exists.")
             return redirect("Familyreg_page")
 
-        except Exception as e:
-            messages.error(request, "Unexpected error occurred.")
-            print("Registration error:", e) 
-            return redirect("Familyreg_page")
-
-    # GET request
     return redirect("Familyreg_page")
+
+
 
 
 def Transaction1_page(request):
@@ -285,11 +289,20 @@ def Categorylist_page(request):
        'role':role})
 
 def Memberlist_page(request):
-    members = Registration.objects.filter(role='family')
-    role =  request.session.get("role")
+    logged_user_id = request.session.get("user_id")
+
+    members = Registration.objects.filter(
+        role="family",
+        parent_id=logged_user_id
+    )
+
+    role = request.session.get("role")
+
     return render(request, 'fam_member.html', {
         'members': members,
-        'role':role})
+        'role': role
+    })
+
 
 def userlist_page(request):
     users = Registration.objects.filter(role='user')
@@ -674,12 +687,47 @@ def reports_page(request):
     
     user_id = request.session.get('user_id')
     user = get_object_or_404(Registration, id=user_id)
+    print("LOGGED IN USER:", user.username, "ROLE:", user.role)
     role = user.role
+    print("before condition")
 
-    transactions = Transaction.objects.filter(by=user)
+    mode = request.GET.get("mode", "individual")
+    print("REPORTS - MODE:", mode)
+
+    user = request.user   # IMPORTANT
+
+    if mode == "family" and role == "main":
+
+        members = Registration.objects.filter(parent=user_id)
+
+        print("FAMILY MEMBERS:", members.count())
+
+        user_ids = list(members.values_list("id", flat=True))
+        user_ids.append(user.id)
+
+        print("ALL USER IDS:", user_ids)
+
+        transactions = Transaction.objects.filter(
+            by__in=user_ids
+        )
+
+        print("FAMILY TRANSACTIONS COUNT:", transactions.count())
+
+    else:
+
+        transactions = Transaction.objects.filter(by=user)
+
+        print("INDIVIDUAL TRANSACTIONS COUNT:", transactions.count())
+
+
+    print("USER ROLE:", role)
+
+    # DO NOT overwrite transactions here ❗
+
     range_type = request.GET.get("range")
     start = request.GET.get("start")
     end = request.GET.get("end")
+
 
     # ------------------ APPLY FILTERS ------------------
 
