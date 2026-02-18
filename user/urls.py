@@ -70,7 +70,7 @@ urlpatterns = [
       path('user/reports/', views.reports_page, name='reports_page'),
       path('report/pdf/', views.generate_pdf, name='generate_pdf'),
 
-      path('forgot-password/', views.forgot_password, name='forgot_password'),
+      path('forgot-password/', views.password_reset, name='forgot_password'),
       path('verify-otp/', views.verify_otp, name='verify_otp'),
       path('reset-password/', views.reset_password, name='reset_password'),
 

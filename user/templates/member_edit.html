@@ -1,22 +1,61 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Edit Family Member</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Edit</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h2> Edit Family Member : {{ transac.id }}</h2>
-        <form method="POST"> 
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen flex items-center justify-center">
+
+    <!-- Card -->
+    <div class="bg-slate-800/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
+
+        <!-- Title -->
+        <h2 class="text-2xl font-bold text-white text-center mb-2">
+            Edit Family Member
+        </h2>
+
+        <p class="text-gray-400 text-center mb-6 text-sm">
+            Update member details
+        </p>
+
+        <!-- Form -->
+        <form method="POST" class="space-y-5">
             {% csrf_token %}
-            {{ forms.as_p }}    
-            <button type="submit">Edit</button>  
+
+            <!-- Django Form -->
+            <div class="space-y-4 text-gray-200">
+                {{ forms.as_p }}
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit"
+                class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold
+                       hover:bg-blue-700 transition duration-300 shadow-lg"
+            >
+                Save Changes
+            </button>
         </form>
-        <br>
-        <a href="{% url 'Memberlist_page' %}">Back to Transaction list</a>
-    </body>
+
+        <!-- Back -->
+        <div class="text-center mt-6">
+            <a 
+                href="{% url 'Memberlist_page' %}"
+                class="text-gray-400 hover:text-blue-400 transition"
+            >
+                Cancel
+            </a>
+        </div>
+
+    </div>
+
+</body>
 </html>
