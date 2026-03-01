@@ -1,0 +1,75 @@
+{% extends "base_dashboard.html" %}
+{% block content %}
+
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div class="bg-white shadow-xl rounded-2xl w-full max-w-3xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+            <h2 class="text-2xl font-bold">User Profile</h2>
+            <p class="text-sm opacity-80">Manage your account information</p>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="p-8 grid md:grid-cols-2 gap-6">
+          {% if profile %}
+            
+            <!-- Username -->
+            <div>
+                <label class="text-gray-500 text-sm">Username</label>
+                <p class="text-lg font-semibold text-gray-800 mt-1">
+                    {{ profile.username }}
+                </p>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="text-gray-500 text-sm">Email</label>
+                <p class="text-lg font-semibold text-gray-800 mt-1">
+                  {{ profile.email_id }}
+                </p>
+            </div>
+
+            <!-- Role -->
+            <div>
+                <label class="text-gray-500 text-sm">Role</label>
+                <p class="text-lg font-semibold text-gray-800 mt-1">
+                   {{ profile.role }}
+                </p>
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label class="text-gray-500 text-sm">Phone Number</label>
+                <p class="text-lg font-semibold text-gray-800 mt-1">
+                    {{ profile.phn_no }}
+                </p>
+            </div>
+
+            <!-- Location -->
+            <div class="md:col-span-2">
+                <label class="text-gray-500 text-sm">Location</label>
+                <p class="text-lg font-semibold text-gray-800 mt-1">
+                    {{ profile.location }}
+                </p>
+            </div>
+          {% else %}
+              <div class="col-span-2 text-center py-10">
+                    <p class="text-gray-500 text-lg">No profile information available.</p>
+                </div>
+          {% endif %}    
+
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-50 px-8 py-4 flex justify-end">
+            <a href="{% url 'edit_profile' %}" 
+               class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition duration-300">
+                Edit Profile
+            </a>
+        </div> 
+
+    </div>
+</div>
+
+{% endblock %}

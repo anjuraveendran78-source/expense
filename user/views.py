@@ -1,6 +1,8 @@
 from urllib import request
 from django.http import HttpResponse # type: ignore
-from django .shortcuts import render,redirect,get_object_or_404 # type: ignore
+from django .shortcuts import render,redirect,get_object_or_404
+
+#from expense import user # type: ignore
 from .models import Registration, Notification, Transaction, Category, Reminder
 from .forms import LoginForm, RegistrationForm,TransactionForm,DashboardForm,ResetForm,CategoryForm,ReminderForm
 from django.contrib.auth.hashers import make_password, check_password
@@ -8,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.urls import reverse
 from uuid import uuid4
 from django.http import HttpResponseRedirect
-
+from django.contrib.auth.hashers import make_password
 import random
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
@@ -25,6 +27,7 @@ from django.db import IntegrityError
 from django.core.mail import send_mail
 from .util import send_email
 from django.utils.timezone import now
+
 
 #BASIC Page Renders
 
@@ -891,13 +894,15 @@ def password_reset(request):
 
         
         elif stage == "new_password":
-
+            print("Reached new password stage")
             new_password = request.POST.get("new_password")
             email = request.session.get("reset_email")
-
+            print(f"Email from session: {email}, New Password: {new_password}")
             try:
                 user = Registration.objects.get(email_id=email)
-                user.Password = new_password
+                print(f"User found: {user.username}")
+                user.password = make_password(new_password)
+                print("Password updated in user object, now saving...")
                 user.save()
 
                 request.session.pop("reset_otp", None)
@@ -972,4 +977,65 @@ def reset_password(request):
     role =  request.session.get("role")
     return render(request, 'reset_password.html',{'role':role})
 
+
+def profile(request):
+    logged_username = request.session.get('username')
+    print("Logged-in username:", logged_username)
+    if not logged_username:
+        return HttpResponse("No user logged in", status=401)
+    
+    user = get_object_or_404(Registration, username=logged_username)
+    role = user.role
+    
+    
+
+    profile = Registration.objects.filter(
+        username=logged_username
+    ).first()
+    print("Profile found:", profile)
+    if not profile:
+        return render(request, "profile.html", {
+            "error": "Profile not found"
+        })
+    print("Profile details - Username:", profile.username, 
+          "Email:", profile.email_id,
+           "Role:", profile.role, "Phone:", 
+           profile.phn_no, "Location:", profile.location)
+
+    context = {
+        "profile": profile
+    }
+
+    print("okey")
+
+    return render(request, "profile.html", context)
+
+def edit_profile(request):
+    logged_username = request.session.get('username')
+    print("Logged-in username:", logged_username)
+    if not logged_username:
+        return HttpResponse("No user logged in", status=401)
+    
+    user = get_object_or_404(Registration, username=logged_username)
+    role = user.role
+
+    profile = Registration.objects.filter(
+        username=logged_username
+    ).first()
+    
+
+    if request.method == "POST":
+        profile.username = request.POST.get("username")
+        profile.email_id = request.POST.get("email")
+        profile.phn_no = request.POST.get("phone")
+        profile.location = request.POST.get("location")
+
+        profile.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect("profile")
+
+    return render(request, "edit_profile.html", {
+        "profile": profile
+    })
 #end of view functions

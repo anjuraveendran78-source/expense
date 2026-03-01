@@ -1,0 +1,63 @@
+{% extends "base_dashboard.html" %}
+{% block content %}
+
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div class="bg-white shadow-xl rounded-2xl w-full max-w-3xl overflow-hidden">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+            <h2 class="text-2xl font-bold">Edit Profile</h2>
+            <p class="text-sm opacity-80">Update your account details</p>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" class="p-8 grid md:grid-cols-2 gap-6">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div>
+                <label class="block text-gray-600 text-sm mb-1">Username</label>
+                <input type="text" name="username" value="{{ profile.username }}"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-gray-600 text-sm mb-1">Email</label>
+                <input type="email" name="email" value="{{ profile.email_id }}"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label class="block text-gray-600 text-sm mb-1">Phone</label>
+                <input type="text" name="phone" value="{{ profile.phn_no }}"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            </div>
+
+            <!-- Location -->
+            <div>
+                <label class="block text-gray-600 text-sm mb-1">Location</label>
+                <input type="text" name="location" value="{{ profile.location }}"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+            </div>
+
+            <!-- Buttons -->
+            <div class="md:col-span-2 flex justify-end gap-4 mt-4">
+                <a href="{% url 'profile' %}"
+                   class="px-6 py-2 rounded-lg border border-gray-400 text-gray-600 hover:bg-gray-100">
+                   Cancel
+                </a>
+
+                <button type="submit"
+                    class="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

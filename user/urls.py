@@ -18,7 +18,8 @@ urlpatterns = [
      path('user/reminder/family/add/',views.Reminder2_page, name='Reminder2_page'),
      path('',views.main_home, name='main_home'),
      path("user/family_reg_page",views.Familyreg_page,name="Familyreg_page"),
-
+     path("profile/", views.profile, name="profile"),
+     path("edit-profile/", views.edit_profile, name="edit_profile"),
     #List urls
      path('user/Transaction1',views.Transaction1_page, name='Transaction1_page'),
      path('user/Transaction2',views.Transaction2_page, name='Transaction2_page'),
