@@ -27,6 +27,7 @@ from django.db import IntegrityError
 from django.core.mail import send_mail
 from .util import send_email
 from django.utils.timezone import now
+from datetime import timedelta
 
 
 #BASIC Page Renders
@@ -726,14 +727,72 @@ def reports_page(request):
     # ------------------ SUMMARY ------------------
 
     income_total = transactions.filter(Type__iexact="income").aggregate(
-        total=Sum("amount")
-    )["total"] or 0
+            total=Sum("amount")
+        )["total"] or 0
 
     expense_total = transactions.filter(Type__iexact="expense").aggregate(
-        total=Sum("amount")
-    )["total"] or 0
-
+            total=Sum("amount")
+        )["total"] or 0
+    
     balance = income_total - expense_total
+
+    today = now().date()
+
+    # Current month start
+    current_month_start = today.replace(day=1)
+
+    # Last month start
+    last_month_end = current_month_start - timedelta(days=1)
+    last_month_start = last_month_end.replace(day=1)
+
+    # Current month expense
+    current_expense = transactions.filter(
+        Type__iexact="expense",
+        date__gte=current_month_start
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Last month expense
+    last_expense = transactions.filter(
+        Type__iexact="expense",
+        date__range=[last_month_start, last_month_end]
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Percentage change
+    if last_expense > 0:
+        expense_change = ((current_expense - last_expense) / last_expense) * 100
+    else:
+        expense_change = 0
+
+    expense_change = round(expense_change, 2)
+    expense_change_abs = abs(expense_change)
+
+    
+
+        # ------------------ INCOME CHANGE ------------------
+
+    # Current month income
+    current_income = transactions.filter(
+        Type__iexact="income",
+        date__gte=current_month_start
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Last month income
+    last_income = transactions.filter(
+        Type__iexact="income",
+        date__range=[last_month_start, last_month_end]
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Percentage change
+    if last_income > 0:
+        income_change = ((current_income - last_income) / last_income) * 100
+    else:
+        income_change = 0
+
+    income_change = round(income_change, 2)
+    income_change_abs = abs(income_change)
+
+
+    
 
     # ------------------ MONTHLY CHART ------------------
 
@@ -775,7 +834,12 @@ def reports_page(request):
         "mode": mode,
         "income": income_total,
         "expense": expense_total,
-        "balance": balance,
+        #"balance": balance,
+        "income_change": income_change,
+        "expense_change": expense_change,
+        "income_change_abs": income_change_abs,
+        "expense_change_abs": expense_change_abs,
+        "net_balance": balance,
         "transactions": transactions,
 
         "months_json": json.dumps(months),

@@ -1,73 +1,94 @@
 {% extends "base_dashboard.html" %}
 {% block content %}
 
-<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-    <div class="bg-white shadow-xl rounded-2xl w-full max-w-3xl overflow-hidden">
+<div class="flex justify-center items-start min-h-[70vh] pt-10 animate-fade-in-up">
         
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
-            <h2 class="text-2xl font-bold">User Profile</h2>
-            <p class="text-sm opacity-80">Manage your account information</p>
-        </div>
-
-        <!-- Profile Content -->
-        <div class="p-8 grid md:grid-cols-2 gap-6">
-          {% if profile %}
+    <div
+    class="w-full max-w-lg bg-white dark:bg-slate-800 rounded-3xl 
+    shadow-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
             
-            <!-- Username -->
-            <div>
-                <label class="text-gray-500 text-sm">Username</label>
-                <p class="text-lg font-semibold text-gray-800 mt-1">
-                    {{ profile.username }}
-                </p>
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 text-white">
+                <h2 class="text-2xl font-bold tracking-wide">User Profile</h2>
+                <p class="text-sm text-gray-200 mt-1">Manage your account information</p>
             </div>
 
-            <!-- Email -->
-            <div>
-                <label class="text-gray-500 text-sm">Email</label>
-                <p class="text-lg font-semibold text-gray-800 mt-1">
-                  {{ profile.email_id }}
-                </p>
-            </div>
-
-            <!-- Role -->
-            <div>
-                <label class="text-gray-500 text-sm">Role</label>
-                <p class="text-lg font-semibold text-gray-800 mt-1">
-                   {{ profile.role }}
-                </p>
-            </div>
-
-            <!-- Phone -->
-            <div>
-                <label class="text-gray-500 text-sm">Phone Number</label>
-                <p class="text-lg font-semibold text-gray-800 mt-1">
-                    {{ profile.phn_no }}
-                </p>
-            </div>
-
-            <!-- Location -->
-            <div class="md:col-span-2">
-                <label class="text-gray-500 text-sm">Location</label>
-                <p class="text-lg font-semibold text-gray-800 mt-1">
-                    {{ profile.location }}
-                </p>
-            </div>
-          {% else %}
-              <div class="col-span-2 text-center py-10">
-                    <p class="text-gray-500 text-lg">No profile information available.</p>
+            <!-- Profile Content -->
+            <div class="p-8 grid md:grid-cols-2 gap-8">
+              {% if profile %}
+                
+                 <!-- Username -->
+                <div>
+                    <label class="text-gray-400 text-sm">Username</label>
+                    <input type="text" value="{{ profile.username }}"
+                        class="w-full mt-1 px-4 py-2 rounded-lg
+                        bg-gray-100 dark:bg-slate-700
+                        text-gray-900 dark:text-white
+                        border border-gray-300 dark:border-slate-600
+                        placeholder-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                        transition duration-200">
                 </div>
-          {% endif %}    
+
+                <!-- Email -->
+                <div>
+                    <label class="text-gray-400 text-sm">Email</label>
+                    <input type="email" name="email" value="{{ profile.email_id }}"
+                        class="w-full mt-1 px-4 py-2 rounded-lg
+                        bg-gray-100 dark:bg-slate-700
+                        text-gray-900 dark:text-white
+                        border border-gray-300 dark:border-slate-600
+                        placeholder-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                        transition duration-200">
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label class="text-gray-400 text-sm">Phone Number</label>
+                    <input type="text" value="{{ profile.phn_no }}"
+                        class="w-full mt-1 px-4 py-2 rounded-lg
+                        bg-gray-100 dark:bg-slate-700
+                        text-gray-900 dark:text-white
+                        border border-gray-300 dark:border-slate-600
+                        placeholder-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                        transition duration-200">
+                </div>
+                
+                <!-- Location -->
+                <div class="md:col-span-2">
+                    <label class="text-gray-400 text-sm">Location</label>
+                    <input type="text" value="{{ profile.location }}"
+                        class="w-full mt-1 px-4 py-2 rounded-lg
+                        bg-gray-100 dark:bg-slate-700
+                        text-gray-900 dark:text-white
+                        border border-gray-300 dark:border-slate-600
+                        placeholder-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500
+                        transition duration-200">
+                </div>
+
+              {% else %}
+                  <div class="col-span-2 text-center py-10">
+                        <p class="text-gray-400 text-lg">
+                            No profile information available.
+                        </p>
+                    </div>
+              {% endif %}    
+
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 text-white flex justify-center items-center">
+                <a href="{% url 'edit_profile' %}" 
+                   class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-300 shadow-lg">
+                    Edit Profile
+                </a>
+            </div> 
+
 
         </div>
-
-        <!-- Footer -->
-        <div class="bg-gray-50 px-8 py-4 flex justify-end">
-            <a href="{% url 'edit_profile' %}" 
-               class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition duration-300">
-                Edit Profile
-            </a>
-        </div> 
 
     </div>
 </div>

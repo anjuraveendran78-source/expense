@@ -8,7 +8,7 @@
     <title>{% block title %}Expense Tracker{% endblock %}</title>
 
     <!-- Tailwind CSS -->
-   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <script src="https://cdn.tailwindcss.com"></script>
      <script>
         tailwind.config = {
             darkMode: 'class',
@@ -33,6 +33,7 @@
             }
         }
     </script>
+   
 
     <!-- Theme Check Script (Prevents FOUC) -->
     <script>
@@ -96,7 +97,7 @@
                     </a>
                 </div>
 
-               {% comment %} <!-- Right Actions -->
+             <!-- Right Actions -->
                 <div class="flex items-center space-x-4 ml-auto">
                     <!-- Theme Toggle -->
                     <button
@@ -113,7 +114,7 @@
                                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                             </path>
                         </svg>
-                    </button>  {% endcomment %}
+                    </button>  
 
                     <!-- User Menu -->
                     <!-- User Profile Dropdown -->
@@ -204,50 +205,36 @@
         // --- Theme Toggle Logic ---
         const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
 
-        // Initial Theme Check
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
         themeToggleBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                }
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
             });
         });
 
         // --- Mobile Sidebar Toggle Logic ---
-        // Expecting sidebar.html to have an element with id="sidebar"
         const toggleSidebarMobile = document.getElementById('toggleSidebarMobile');
         const sidebar = document.getElementById('sidebar');
 
         if (toggleSidebarMobile && sidebar) {
             toggleSidebarMobile.addEventListener('click', () => {
-                // Toggle the class that hides the sidebar off-screen
                 sidebar.classList.toggle('-translate-x-full');
-
-                // Optional: Handle aria-expanded attribute
-                const isExpanded = sidebar.classList.contains('-translate-x-full') ? 'false' : 'true';
+                const isExpanded = !sidebar.classList.contains('-translate-x-full');
                 toggleSidebarMobile.setAttribute('aria-expanded', isExpanded);
             });
         }
 
-        // Close sidebar when clicking outside (optional polish)
+        // Close sidebar when clicking outside
         document.addEventListener('click', (event) => {
-            if (sidebar && !sidebar.contains(event.target) && !toggleSidebarMobile.contains(event.target)) {
-                if (!sidebar.classList.contains('-translate-x-full')) {
-                    sidebar.classList.add('-translate-x-full'); // Hide it
-                }
+            if (
+                sidebar &&
+                toggleSidebarMobile &&
+                !sidebar.contains(event.target) &&
+                !toggleSidebarMobile.contains(event.target)
+            ) {
+                sidebar.classList.add('-translate-x-full');
             }
         });
-
     </script>
 </body>
 
